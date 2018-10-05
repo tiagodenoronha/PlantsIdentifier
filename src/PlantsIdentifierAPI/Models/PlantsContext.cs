@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlantsIdentifierAPI.Models;
 
-namespace PlantsIdentifierAPI.Controllers
+namespace PlantsIdentifierAPI.Models
 {
     public class PlantsContext : DbContext
     {
