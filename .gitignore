@@ -1,6 +1,7 @@
 # Autosave files
 *~
 
+*.db
 **/appsettings.staging.json
 **/appsettings.json
 
