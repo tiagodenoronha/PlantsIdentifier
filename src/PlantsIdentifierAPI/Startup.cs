@@ -27,8 +27,12 @@ namespace PlantsIdentifierAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ///////////////////////// using a local .db file /////////////////////////
             services.AddDbContext<PlantsContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
+
+            /////////////////////////using a docker container with an SQL Server /////////////////////////
             //services.AddDbContext<PlantsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

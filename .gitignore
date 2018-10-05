@@ -1,6 +1,10 @@
 # Autosave files
 *~
 
+**/appsettings.staging.json
+**/appsettings.json
+
+
 # build
 [Oo]bj/
 [Bb]in/
