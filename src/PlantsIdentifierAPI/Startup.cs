@@ -39,7 +39,7 @@ namespace PlantsIdentifierAPI
                 .AddEntityFrameworkStores<ApplicationDBContext>()
                 .AddDefaultTokenProviders();
 
-            var signingConfigurations = new SigningConfigurations();
+            var signingConfigurations = new SigningConfigurations(Configuration);
             services.AddSingleton(signingConfigurations);
 
             var tokenConfigurations = new TokenConfigurations();
