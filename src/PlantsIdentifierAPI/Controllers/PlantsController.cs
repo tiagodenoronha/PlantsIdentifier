@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,11 +15,11 @@ namespace PlantsIdentifierAPI.Controllers
     [ApiController]
     public class PlantsController : ControllerBase
     {
-        readonly PlantsContext _plantsContext;
+        readonly ApplicationDBContext _applicationDBContext;
 
-        public PlantsController(PlantsContext plantsContext)
+        public PlantsController(ApplicationDBContext applicationDBContext)
         {
-            _plantsContext = plantsContext;
+            _applicationDBContext = applicationDBContext;
         }
 
         // GET api/plants
@@ -28,7 +29,7 @@ namespace PlantsIdentifierAPI.Controllers
         {
             try
             {
-                var plants = _plantsContext.Plant.ToList();
+                var plants = _applicationDBContext.Plant.ToList();
                 if (plants.Count == 0)
                     return new EmptyResult();
                 else
@@ -54,7 +55,7 @@ namespace PlantsIdentifierAPI.Controllers
         {
             try
             {
-                var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
+                var plant = await _applicationDBContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
                 if (plant == null)
                     return NotFound(new { ID = ID, Error = "No plant with the provided ID." });
                 return Ok(plant);
@@ -78,11 +79,11 @@ namespace PlantsIdentifierAPI.Controllers
             }
             try
             {
-                var existingPlant = _plantsContext.Plant.FirstOrDefault(p => p.CommonName == plant.CommonName);
+                var existingPlant = _applicationDBContext.Plant.FirstOrDefault(p => p.CommonName == plant.CommonName);
                 if (existingPlant != null)
                     return Conflict();
-                _plantsContext.Plant.Add(plant);
-                _plantsContext.SaveChanges();
+                _applicationDBContext.Plant.Add(plant);
+                _applicationDBContext.SaveChanges();
                 return Ok(true);
             }
             catch (DbUpdateException dbEx)
