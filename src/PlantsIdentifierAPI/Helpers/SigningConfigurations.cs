@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace PlantsIdentifierAPI.Helpers
@@ -10,12 +11,9 @@ namespace PlantsIdentifierAPI.Helpers
 
         public SigningConfigurations()
         {
-            using (var provider = new RSACryptoServiceProvider(2048))
-            {
-                Key = new RsaSecurityKey(provider.ExportParameters(true));
-            }
+            Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ULTRASUPERAWESOMEPASSWORDWHICHCANNOTBECRACKED"));
 
-            SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.RsaSha256Signature);
+            SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         }
     }
 }
