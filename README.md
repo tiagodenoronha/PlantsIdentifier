@@ -3,7 +3,7 @@
 I recently adopted a cat and found out there are some plants that are dangerous for him! So i've set out to build a mobile App which leverages Azure Custom Vision. 
 
 It is a Xamarin.Forms App, with a .NET Core support Backend (yes, I use a Mac with VSCode :) ). 
-All connections from the App (except authentication probably, still thinking about client-side or server-side) pass through the backend to be able to monitor it a bit better.
+All connections from the App pass through the backend to be able to monitor it a bit better.
 
 [![Bugs](https://img.shields.io/github/issues/tiagodenoronha/PlantsIdentifier.svg)](https://github.com/tiagodenoronha/PlantsIdentifier/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/tiagodenoronha/PlantsIdentifier/.svg?style=social)](https://twitter.com/intent/tweet?text=This%20is%20awesome!&url=https%3A%2F%2Fgithub.com%2Ftiagodenoronha%2FPlantsIdentifier%2F)
