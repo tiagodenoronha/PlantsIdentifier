@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,10 +30,10 @@ namespace PlantsIdentifierAPI
         public void ConfigureServices(IServiceCollection services)
         {
             ///////////////////////// using a local .db file /////////////////////////
-            services.AddDbContext<ApplicationDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
+            //services.AddDbContext<ApplicationDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
 
             /////////////////////////using a docker container with an SQL Server /////////////////////////
-            //services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
+            services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDBContext>()
@@ -59,7 +60,6 @@ namespace PlantsIdentifierAPI
                 paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
 
                 //Checks for a valid signature of a token
-
                 paramsValidation.ValidateIssuerSigningKey = true;
 
                 //Checks if the token has expired
@@ -69,12 +69,12 @@ namespace PlantsIdentifierAPI
             });
 
             //Activates the authorizing middleware
-            // services.AddAuthorization(auth =>
-            // {
-            //     auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-            //         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            //         .RequireAuthenticatedUser().Build());
-            // });
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser().Build());
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -98,7 +98,7 @@ namespace PlantsIdentifierAPI
             new IdentityInitializer(context, userManager, roleManager, Configuration).Initialize();
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

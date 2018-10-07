@@ -54,7 +54,7 @@ namespace PlantsIdentifierAPI.Data
             if (_userManager.FindByNameAsync(user.UserName).Result == null)
             {
                 var resultado = _userManager
-                    .CreateAsync(user, password).Result;
+                    .CreateAsync(user, password).GetAwaiter().GetResult();
 
                 if (resultado.Succeeded &&
                     !String.IsNullOrWhiteSpace(initialRole))

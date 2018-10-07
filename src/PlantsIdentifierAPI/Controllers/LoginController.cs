@@ -1,15 +1,20 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.Helpers;
+using System.Linq;
 
 namespace PlantsIdentifierAPI.Controllers
 {
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -40,11 +45,13 @@ namespace PlantsIdentifierAPI.Controllers
 
         [HttpPost]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> Login([FromBody] RegisterDTO user)
         {
             if (user != null && !string.IsNullOrWhiteSpace(user.UserEmail))
             {
+                var users = _userManager.Users.ToList();
                 //Check if the user exists on the database
                 var userIdentity = await _userManager.FindByEmailAsync(user.UserEmail);
                 if (userIdentity != null)
@@ -58,13 +65,47 @@ namespace PlantsIdentifierAPI.Controllers
                         return GenerateToken(userIdentity);
                     }
                 }
+                else
+                    return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
             }
+
             return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest, Constants.BADREQUEST);
         }
 
         private IActionResult GenerateToken(ApplicationUser userIdentity)
         {
-            throw new NotImplementedException();
+            ClaimsIdentity identity = new ClaimsIdentity(
+                    new GenericIdentity(userIdentity.UserName, "Login"),
+                    new[] {
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+                        new Claim(JwtRegisteredClaimNames.UniqueName, userIdentity.UserName),
+                        new Claim("Email", userIdentity.Email)
+                    }
+                );
+
+            DateTime createDate = DateTime.Now;
+            DateTime expiryDate = createDate +
+                TimeSpan.FromSeconds(_tokenConfigurations.Seconds);
+
+            var handler = new JwtSecurityTokenHandler();
+            var securityToken = handler.CreateToken(new SecurityTokenDescriptor
+            {
+                Issuer = _tokenConfigurations.Issuer,
+                Audience = _tokenConfigurations.Audience,
+                SigningCredentials = _signingConfigurations.SigningCredentials,
+                Subject = identity,
+                NotBefore = createDate,
+                Expires = expiryDate
+            });
+            var token = handler.WriteToken(securityToken);
+
+            return Ok(new
+            {
+                authenticated = true,
+                created = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                expiration = expiryDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                accessToken = token,
+            });
         }
     }
 }
