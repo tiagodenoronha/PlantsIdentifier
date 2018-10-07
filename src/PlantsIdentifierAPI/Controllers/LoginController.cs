@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,14 +29,14 @@ namespace PlantsIdentifierAPI.Controllers
             _tokenConfigurations = tokenConfigurations;
         }
 
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(500)]
-        public IActionResult Register([FromBody] RegisterUser user)
-        {
-            return Ok();
-        }
+        // [HttpPost]
+        // [ProducesResponseType(200)]
+        // [ProducesResponseType(401)]
+        // [ProducesResponseType(500)]
+        // public IActionResult Register([FromBody] RegisterUser user)
+        // {
+        //     return Ok();
+        // }
 
         [HttpPost]
         [ProducesResponseType(200)]
@@ -59,6 +60,11 @@ namespace PlantsIdentifierAPI.Controllers
                 }
             }
             return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest, Constants.BADREQUEST);
+        }
+
+        private IActionResult GenerateToken(ApplicationUser userIdentity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

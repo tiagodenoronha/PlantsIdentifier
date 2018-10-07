@@ -7,8 +7,8 @@ using PlantsIdentifierAPI.Data;
 
 namespace PlantsIdentifierAPI.Migrations
 {
-    [DbContext(typeof(PlantsContext))]
-    partial class PlantsContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDBContext))]
+    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

@@ -8,7 +8,7 @@ using PlantsIdentifierAPI.Data;
 
 namespace PlantsIdentifierAPI.Migrations
 {
-    [DbContext(typeof(PlantsContext))]
+    [DbContext(typeof(ApplicationDBContext))]
     [Migration("20181005231806_InitialCreate")]
     partial class InitialCreate
     {
