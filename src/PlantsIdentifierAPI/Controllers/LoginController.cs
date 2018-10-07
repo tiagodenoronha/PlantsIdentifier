@@ -40,32 +40,25 @@ namespace PlantsIdentifierAPI.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> Login([FromBody] RegisterDTO user)
         {
-            bool credenciaisValidas = false;
             if (user != null && !string.IsNullOrWhiteSpace(user.UserEmail))
             {
-                // Verifica a existência do usuário nas tabelas do
-                // ASP.NET Core Identity
-                var userIdentity = await _userManager
-                    .FindByNameAsync(user.UserEmail);
+                //Check if the user exists on the database
+                var userIdentity = await _userManager.FindByEmailAsync(user.UserEmail);
                 if (userIdentity != null)
                 {
                     // Efetua o login com base no Id do usuário e sua senha
-                    var resultadoLogin = await _signInManager
-                        .CheckPasswordSignInAsync(userIdentity, user.Password, false);
-                    if (resultadoLogin.Succeeded)
+                    var loginResult = await _signInManager.CheckPasswordSignInAsync(userIdentity, user.Password, false);
+                    if (!loginResult.Succeeded)
+                        return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
+                    else
                     {
-                        // Since we want him to access all the app, 
-                        //we don't care about roles 
-                        // credenciaisValidas = await _userManager.IsInRoleAsync(
-                        //     userIdentity, ApplicationRoles.ADMINROLE);
+                        return GenerateToken(userIdentity);
                     }
                 }
             }
-
-            return Ok();
+            return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest, Constants.BADREQUEST);
         }
     }
 }
