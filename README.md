@@ -1,5 +1,7 @@
 # PlantsIdentifier
 
+[![Build Status](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_apis/build/status/PlantsIdentifier-CI)](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_build/latest?definitionId=4)
+
 I recently adopted a cat and found out there are some plants that are dangerous for him! So i've set out to build a mobile App which leverages Azure Custom Vision. 
 
 It is a Xamarin.Forms App, with a .NET Core support Backend (yes, I use a Mac with VSCode :) ). 
