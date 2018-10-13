@@ -28,15 +28,11 @@ namespace PlantsIdentifierAPI.Controllers
         {
             try
             {
-                var plants = _plantsContext.Plant.ToList();
-                if (plants.Count == 0)
+                var plants = _plantsContext.Plant;
+                if (!plants.Any())
                     return new EmptyResult();
                 else
                     return Ok(plants);
-            }
-            catch (ArgumentNullException argEx)
-            {
-                return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, argEx.Message);
             }
             catch (Exception ex)
             {
