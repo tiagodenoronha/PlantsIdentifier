@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace PlantsIdentifierAPI.UnitTests
+namespace PlantsIdentifierAPI.UnitTests.Controllers
 {
 	public class PlantsControllerTests
 	{
@@ -84,6 +84,43 @@ namespace PlantsIdentifierAPI.UnitTests
 			//Assert
 			Assert.IsType<ActionResult<Plant>>(result);
 			Assert.NotNull(contentResult);
+		}
+
+		[Fact]
+		public async Task Plants_Insert_ReturnsOk()
+		{
+			//Arrange
+			var mockRepo = new Mock<IPlantsServices>();
+			var controller = new PlantsController(mockRepo.Object);
+
+			//Act
+			var result = await controller.Post(Mock.Of<Plant>());
+			var contentResult = result.Result as OkObjectResult;
+			var inserted = (bool)contentResult.Value;
+
+			//Assert
+			Assert.IsType<ActionResult<bool>>(result);
+			Assert.True(inserted);
+		}
+
+		[Fact]
+		public async Task Plants_GetOneFromID_ReturnsConflict()
+		{
+			var commonName = "Plant";
+			var plant = Mock.Of<Plant>();
+
+			//Arrange
+			var mockRepo = new Mock<IPlantsServices>();
+			mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).Returns(Task.FromResult(plant));
+			var controller = new PlantsController(mockRepo.Object);
+
+			//Act
+			var result = await controller.Post(Mock.Of<Plant>(p => p.CommonName == commonName));
+			var contentResult = result.Result as ConflictObjectResult;
+
+			//Assert
+			Assert.IsType<ActionResult<bool>>(result);
+			
 		}
 	}
 }
