@@ -3,7 +3,6 @@ using Moq;
 using PlantsIdentifierAPI.Controllers;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -30,12 +29,10 @@ namespace PlantsIdentifierAPI.UnitTests
 			var numberOfPlants = 5;
 			var mockRepo = new Mock<IPlantsServices>();
 			mockRepo.Setup(repo => repo.GetAll()).Returns(Enumerable.Repeat(Mock.Of<Plant>(), numberOfPlants));
-			// mockRepo.Setup(repo => repo.Plant).ReturnsAsync(FillPlants());
 			var controller = new PlantsController(mockRepo.Object);
 
 			var result = controller.Get();
-			Assert.NotEmpty(result.Value);
-			
+			Assert.IsType<ActionResult<IEnumerable<Plant>>>(result);		
 
 		}
 	}
