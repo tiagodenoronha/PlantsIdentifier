@@ -48,11 +48,11 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		//Returns this because the Plant may not exist
 		[ProducesResponseType(404)]
-		public async Task<ActionResult<Plant>> Get(int ID)
+		public async Task<ActionResult<Plant>> Get(string ID)
 		{
 			try
 			{
-				var plant = await _plantsServices.GetPlant(ID.ToString());
+				var plant = await _plantsServices.GetPlant(ID);
 				//var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
 				if (plant == null)
 					return NotFound(new { ID, Error = "No plant with the provided ID." });

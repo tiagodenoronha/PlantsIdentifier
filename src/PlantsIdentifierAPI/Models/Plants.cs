@@ -14,7 +14,7 @@ namespace PlantsIdentifierAPI.Models
 
         //[Required(ErrorMessage = "Please input the Common Name for the Plant")]
         //[StringLength(50, ErrorMessage = "The First Name must be less than {1} characters.")]
-        [Display(Name = "Common Name:")]
+        [Display(Name = "Common Name")]
         public string CommonName { get; set; }
 
     }
