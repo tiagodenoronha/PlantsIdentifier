@@ -11,6 +11,6 @@ namespace PlantsIdentifierAPI.Interfaces
 		Task<Plant> GetPlant(string ID);
 		IEnumerable<Plant> GetAll();
 		Task<Plant> GetPlantByCommonName(string commonName);
-		Task SavePlant(Plant plant);
+		void SavePlant(Plant plant);
 	}
 }

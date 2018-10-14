@@ -1,4 +1,5 @@
-﻿using PlantsIdentifierAPI.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,20 @@ namespace PlantsIdentifierAPI.Services
 {
 	public class PlantsServices : IPlantsServices
 	{
-		 readonly PlantsContext _plantsContext;
+		readonly PlantsContext _plantsContext;
 
 		public PlantsServices(PlantsContext plantsContext)
 		{
 			_plantsContext = plantsContext;
 		}
 
-		public IEnumerable<Plant> GetAll() => throw new NotImplementedException();
-		public Task<Plant> GetPlant(string ID) => throw new NotImplementedException();
-		public Task<Plant> GetPlantByCommonName(string commonName) => throw new NotImplementedException();
-		public Task SavePlant(Plant plant) => throw new NotImplementedException();
+		public IEnumerable<Plant> GetAll() => _plantsContext.Plant;
+		public async Task<Plant> GetPlant(string ID) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
+		public async Task<Plant> GetPlantByCommonName(string commonName) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.CommonName == commonName);
+		public void SavePlant(Plant plant)
+		{
+			_plantsContext.Plant.Add(plant);
+			_plantsContext.SaveChanges();
+		}
 	}
 }

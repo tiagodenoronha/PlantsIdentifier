@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace PlantsIdentifierAPI.Controllers
 {
 	[Route("api/[controller]")]
@@ -30,7 +28,6 @@ namespace PlantsIdentifierAPI.Controllers
 			try
 			{
 				var plants = _plantsServices.GetAll();
-				//var plants = _plantsContext.Plant;
 				if (!plants.Any())
 					return new EmptyResult();
 				else
@@ -53,7 +50,6 @@ namespace PlantsIdentifierAPI.Controllers
 			try
 			{
 				var plant = await _plantsServices.GetPlant(ID);
-				//var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
 				if (plant == null)
 					return NotFound(new { ID, Error = "No plant with the provided ID." });
 				return Ok(plant);
@@ -78,12 +74,9 @@ namespace PlantsIdentifierAPI.Controllers
 			try
 			{
 				var existingPlant = await _plantsServices.GetPlantByCommonName(plant.CommonName);
-				//var existingPlant = _plantsContext.Plant.FirstOrDefault(p => p.CommonName == plant.CommonName);
 				if (existingPlant != null)
 					return Conflict();
-				await _plantsServices.SavePlant(plant);
-				//_plantsContext.Plant.Add(plant);
-				//_plantsContext.SaveChanges();
+				_plantsServices.SavePlant(plant);
 				return Ok(true);
 			}
 			catch (DbUpdateException dbEx)
