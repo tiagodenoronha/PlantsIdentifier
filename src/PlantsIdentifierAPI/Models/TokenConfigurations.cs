@@ -1,4 +1,4 @@
-namespace PlantsIdentifierAPI.Helpers
+namespace PlantsIdentifierAPI.Models
 {
     public class TokenConfigurations
     {

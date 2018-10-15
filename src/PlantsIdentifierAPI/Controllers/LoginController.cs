@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.Helpers;
 using System.Linq;
+using PlantsIdentifierAPI.Models;
+using System.Security.Cryptography;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -72,7 +74,36 @@ namespace PlantsIdentifierAPI.Controllers
             return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest, Constants.BADREQUEST);
         }
 
-        private IActionResult GenerateToken(ApplicationUser userIdentity)
+        [HttpPost]
+        public async Task<IActionResult> Refresh(string token, string refreshToken)
+        {
+            //TODO we need to check all the possible ways this breaks
+            var principal = GetPrincipalFromExpiredToken(token);
+            //Retrieving user from database
+            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+            if (user.RefreshToken != refreshToken)
+                throw new SecurityTokenException("Invalid refresh token");
+
+            var newJwtToken = GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+
+            //TODO We need to make this method more generic so that we only need to check this one method for a point of failure.
+            ReplaceRefreshToken(user, newRefreshToken);
+            return new ObjectResult(new
+            {
+                token = newJwtToken,
+                refreshToken = newRefreshToken
+            });
+        }
+
+        void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken)
+        {
+            //TODO we need to check if this returns an error or not with a try catch
+            user.RefreshToken = newRefreshToken;
+            _userManager.UpdateAsync(user);
+        }
+
+        IActionResult GenerateToken(ApplicationUser userIdentity)
         {
             ClaimsIdentity identity = new ClaimsIdentity(
                     new GenericIdentity(userIdentity.UserName, "Login"),
@@ -84,8 +115,7 @@ namespace PlantsIdentifierAPI.Controllers
                 );
 
             DateTime createDate = DateTime.Now;
-            DateTime expiryDate = createDate +
-                TimeSpan.FromSeconds(_tokenConfigurations.Seconds);
+            DateTime expiryDate = createDate + TimeSpan.FromSeconds(_tokenConfigurations.Seconds);
 
             var handler = new JwtSecurityTokenHandler();
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
@@ -104,8 +134,39 @@ namespace PlantsIdentifierAPI.Controllers
                 authenticated = true,
                 created = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 expiration = expiryDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                accessToken = token,
+                accessToken = token
             });
         }
+
+        string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        internal ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true, //you might want to validate the audience and issuer depending on your use case
+                ValidateIssuer = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingConfigurations.Key,
+                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
+            return principal;
+        }
+
     }
 }

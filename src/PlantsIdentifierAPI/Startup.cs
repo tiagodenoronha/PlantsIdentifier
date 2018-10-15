@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Models;
@@ -66,6 +68,20 @@ namespace PlantsIdentifierAPI
                 paramsValidation.ValidateLifetime = true;
 
                 paramsValidation.ClockSkew = TimeSpan.Zero;
+
+                //Handling refresh tokens
+                bearerOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
             });
 
             //Activates the authorizing middleware

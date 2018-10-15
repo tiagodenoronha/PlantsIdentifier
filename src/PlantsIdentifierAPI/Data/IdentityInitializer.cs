@@ -11,7 +11,6 @@ namespace PlantsIdentifierAPI.Data
         readonly RoleManager<IdentityRole> _roleManager;
         readonly IConfiguration _configuration;
 
-
         public IdentityInitializer(
             ApplicationDBContext context,
             UserManager<ApplicationUser> userManager,
@@ -53,8 +52,7 @@ namespace PlantsIdentifierAPI.Data
         {
             if (_userManager.FindByNameAsync(user.UserName).Result == null)
             {
-                var resultado = _userManager
-                    .CreateAsync(user, password).GetAwaiter().GetResult();
+                var resultado = _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
 
                 if (resultado.Succeeded &&
                     !String.IsNullOrWhiteSpace(initialRole))
