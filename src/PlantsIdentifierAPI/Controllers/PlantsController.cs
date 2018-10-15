@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlantsIdentifierAPI.Dtos;
 using PlantsIdentifierAPI.Models;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,17 +16,19 @@ namespace PlantsIdentifierAPI.Controllers
     [ApiController]
     public class PlantsController : ControllerBase
     {
-        readonly PlantsContext _plantsContext;
+        private readonly PlantsContext _plantsContext;
+        private readonly IMapper _mapper;
 
-        public PlantsController(PlantsContext plantsContext)
+        public PlantsController(PlantsContext plantsContext, IMapper mapper)
         {
             _plantsContext = plantsContext;
+            _mapper = mapper;
         }
 
         // GET api/plants
         [HttpGet]
         [ProducesResponseType(200)]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<PlantDto>> Get()
         {
             try
             {
@@ -32,7 +36,10 @@ namespace PlantsIdentifierAPI.Controllers
                 if (plants.Count == 0)
                     return new EmptyResult();
                 else
-                    return Ok(plants);
+                {
+                    var plantDtos = _mapper.Map<IList<PlantDto>>(plants);
+                    return Ok(plantDtos);
+                }
             }
             catch (ArgumentNullException argEx)
             {
@@ -50,14 +57,15 @@ namespace PlantsIdentifierAPI.Controllers
         [ProducesResponseType(200)]
         //Returns this because the Plant may not exist
         [ProducesResponseType(404)]
-        public async Task<ActionResult<Plant>> Get(int ID)
+        public async Task<ActionResult<Plant>> Get(Guid ID)
         {
             try
             {
                 var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
                 if (plant == null)
                     return NotFound(new { ID = ID, Error = "No plant with the provided ID." });
-                return Ok(plant);
+                var plantDto = _mapper.Map<PlantDto>(plant);
+                return Ok(plantDto);
             }
             catch (Exception ex)
             {
@@ -70,7 +78,7 @@ namespace PlantsIdentifierAPI.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(409)]
         [ProducesResponseType(500)]
-        public ActionResult<bool> Post([FromBody] Plant plant)
+        public ActionResult<bool> Post([FromBody] PlantDto plantDto)
         {
             if (!ModelState.IsValid)
             {
@@ -78,6 +86,7 @@ namespace PlantsIdentifierAPI.Controllers
             }
             try
             {
+                var plant = _mapper.Map<Plant>(plantDto);
                 var existingPlant = _plantsContext.Plant.FirstOrDefault(p => p.CommonName == plant.CommonName);
                 if (existingPlant != null)
                     return Conflict();
