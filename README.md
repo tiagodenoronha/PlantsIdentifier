@@ -10,6 +10,27 @@ All connections from the App pass through the backend to be able to monitor it a
 [![Bugs](https://img.shields.io/github/issues/tiagodenoronha/PlantsIdentifier.svg)](https://github.com/tiagodenoronha/PlantsIdentifier/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/tiagodenoronha/PlantsIdentifier/.svg?style=social)](https://twitter.com/intent/tweet?text=This%20is%20awesome!&url=https%3A%2F%2Fgithub.com%2Ftiagodenoronha%2FPlantsIdentifier%2F)
 
+## Getting Started
+
+You can build and run the project from command line using:
+
+1. Move to the project directory.
+```
+$ cd src/PlantsIdentifierAPI
+```
+2. Restore packages.
+```
+$ dotnet restore
+```
+3. Initialize the database.
+```
+$ dotnet ef database update
+```
+4. Run the project.
+```
+$ dotnet run
+```
+
 ## Contributing
 
 If you are interested in fixing issues and contributing directly to the code base, be my guest! Just fork the repo and do your magic! :)
