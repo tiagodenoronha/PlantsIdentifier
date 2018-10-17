@@ -35,7 +35,7 @@ namespace PlantsIdentifierAPI.Services
 			//TODO we need to check all the possible ways this breaks
 			var principal = GetPrincipalFromExpiredToken(token);
 			//Retrieving user from database
-			var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+			return await _userManager.FindByNameAsync(principal.Identity.Name);
 		}
 
 		public void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken)
