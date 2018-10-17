@@ -12,5 +12,7 @@ namespace PlantsIdentifierAPI.Interfaces
 		Task<ApplicationUser> ValidateUser(RegisterDTO user);
 		void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken);
 		Task<ApplicationUser> GetUserFromToken(string token);
+		TokenModel GenerateToken(ApplicationUser userIdentity);
+		string GenerateRefreshToken();
 	}
 }

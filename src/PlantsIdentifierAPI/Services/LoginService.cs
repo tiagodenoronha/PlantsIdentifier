@@ -8,6 +8,8 @@ using PlantsIdentifierAPI.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Services
@@ -15,18 +17,20 @@ namespace PlantsIdentifierAPI.Services
 	public class LoginService : ILoginService
 	{
 		readonly SigningConfigurations _signingConfigurations;
+		readonly TokenConfigurations _tokenConfigurations;
 		readonly UserManager<ApplicationUser> _userManager;
 		readonly SignInManager<ApplicationUser> _signInManager;
 
 		public LoginService([FromServices]UserManager<ApplicationUser> userManager, [FromServices]SignInManager<ApplicationUser> signInManager,
-					[FromServices]SigningConfigurations signingConfigurations)
+					[FromServices]SigningConfigurations signingConfigurations, [FromServices] TokenConfigurations tokenConfigurations)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_signingConfigurations = signingConfigurations;
+			_tokenConfigurations = tokenConfigurations;
 		}
 
-		internal async Task<ApplicationUser> GetUserFromToken(string token)
+		public async Task<ApplicationUser> GetUserFromToken(string token)
 		{
 			//TODO we need to check all the possible ways this breaks
 			var principal = GetPrincipalFromExpiredToken(token);
@@ -34,14 +38,14 @@ namespace PlantsIdentifierAPI.Services
 			var user = await _userManager.FindByNameAsync(principal.Identity.Name);
 		}
 
-		internal void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken)
+		public void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken)
 		{
 			//TODO we need to check if this returns an error or not with a try catch
 			user.RefreshToken = newRefreshToken;
 			_userManager.UpdateAsync(user);
 		}
 
-		internal async Task<ApplicationUser> ValidateUser(RegisterDTO user)
+		public async Task<ApplicationUser> ValidateUser(RegisterDTO user)
 		{
 			if (user != null && !string.IsNullOrWhiteSpace(user.UserEmail))
 			{
@@ -74,6 +78,50 @@ namespace PlantsIdentifierAPI.Services
 			if (!(securityToken is JwtSecurityToken jwtSecurityToken) || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
 				throw new SecurityTokenException("Invalid token");
 			return principal;
+		}
+
+		public TokenModel GenerateToken(ApplicationUser userIdentity)
+		{
+			var identity = new ClaimsIdentity(
+					new GenericIdentity(userIdentity.UserName, "Login"),
+					new[] {
+						new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+						new Claim(JwtRegisteredClaimNames.UniqueName, userIdentity.UserName)
+					}
+				);
+
+			var createDate = DateTime.Now;
+			var expiryDate = createDate + TimeSpan.FromSeconds(_tokenConfigurations.Seconds);
+
+			var handler = new JwtSecurityTokenHandler();
+			var securityToken = handler.CreateToken(new SecurityTokenDescriptor
+			{
+				Issuer = _tokenConfigurations.Issuer,
+				Audience = _tokenConfigurations.Audience,
+				SigningCredentials = _signingConfigurations.SigningCredentials,
+				Subject = identity,
+				NotBefore = createDate,
+				Expires = expiryDate
+			});
+			var token = handler.WriteToken(securityToken);
+
+			return new TokenModel
+			{
+				Authenticated = true,
+				CreatedDate = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
+				ExpirationDate = expiryDate.ToString("yyyy-MM-dd HH:mm:ss"),
+				AccessToken = token
+			};
+		}
+
+		public string GenerateRefreshToken()
+		{
+			var randomNumber = new byte[32];
+			using (var rng = RandomNumberGenerator.Create())
+			{
+				rng.GetBytes(randomNumber);
+				return Convert.ToBase64String(randomNumber);
+			}
 		}
 	}
 }
