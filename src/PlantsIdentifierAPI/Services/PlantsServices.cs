@@ -17,7 +17,7 @@ namespace PlantsIdentifierAPI.Services
 			_plantsContext = plantsContext;
 		}
 
-		public IEnumerable<Plant> GetAll() => _plantsContext.Plant;
+		public IEnumerable<Plant> GetAll() => _plantsContext.Plant.AsEnumerable();
 		public async Task<Plant> GetPlant(string ID) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
 		public async Task<Plant> GetPlantByCommonName(string commonName) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.CommonName == commonName);
 		public void SavePlant(Plant plant)

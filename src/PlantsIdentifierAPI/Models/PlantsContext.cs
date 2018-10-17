@@ -11,6 +11,6 @@ namespace PlantsIdentifierAPI.Models
         {
         }
 
-        public DbSet<Plant> Plant { get; set; }
+        public virtual DbSet<Plant> Plant { get; set; }
     }
 }
