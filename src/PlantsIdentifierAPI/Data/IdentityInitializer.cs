@@ -11,11 +11,8 @@ namespace PlantsIdentifierAPI.Data
         readonly RoleManager<IdentityRole> _roleManager;
         readonly IConfiguration _configuration;
 
-        public IdentityInitializer(
-            ApplicationDBContext context,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+        public IdentityInitializer (ApplicationDBContext context, UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -29,12 +26,10 @@ namespace PlantsIdentifierAPI.Data
             {
                 if (!_roleManager.RoleExistsAsync(ApplicationRoles.ADMINROLE).Result)
                 {
-                    var resultado = _roleManager.CreateAsync(
-                        new IdentityRole(ApplicationRoles.ADMINROLE)).Result;
+                    var resultado = _roleManager.CreateAsync(new IdentityRole(ApplicationRoles.ADMINROLE)).Result;
                     if (!resultado.Succeeded)
                     {
-                        throw new Exception(
-                            $"An error ocurred while creating the role {ApplicationRoles.ADMINROLE}.");
+                        throw new Exception($"An error ocurred while creating the role {ApplicationRoles.ADMINROLE}.");
                     }
                 }
 
@@ -54,8 +49,7 @@ namespace PlantsIdentifierAPI.Data
             {
                 var resultado = _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
 
-                if (resultado.Succeeded &&
-                    !String.IsNullOrWhiteSpace(initialRole))
+                if (resultado.Succeeded && !string.IsNullOrWhiteSpace(initialRole))
                 {
                     _userManager.AddToRoleAsync(user, initialRole).Wait();
                 }

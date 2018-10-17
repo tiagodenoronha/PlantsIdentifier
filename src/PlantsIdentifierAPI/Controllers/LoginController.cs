@@ -12,6 +12,7 @@ using PlantsIdentifierAPI.Helpers;
 using System.Linq;
 using PlantsIdentifierAPI.Models;
 using System.Security.Cryptography;
+using PlantsIdentifierAPI.Interfaces;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -20,20 +21,15 @@ namespace PlantsIdentifierAPI.Controllers
 	[ApiController]
 	public class LoginController : ControllerBase
 	{
-		readonly UserManager<ApplicationUser> _userManager;
-		readonly SignInManager<ApplicationUser> _signInManager;
-		readonly SigningConfigurations _signingConfigurations;
 		readonly TokenConfigurations _tokenConfigurations;
+		readonly ILoginService _loginService;
 
-		public LoginController([FromServices]UserManager<ApplicationUser> userManager,
-					[FromServices]SignInManager<ApplicationUser> signInManager,
-					[FromServices]SigningConfigurations signingConfigurations,
-					[FromServices]TokenConfigurations tokenConfigurations)
+		public LoginController(
+					[FromServices]TokenConfigurations tokenConfigurations,
+					[FromServices]ILoginService loginService)
 		{
-			_userManager = userManager;
-			_signInManager = signInManager;
-			_signingConfigurations = signingConfigurations;
 			_tokenConfigurations = tokenConfigurations;
+			_loginService = loginService;
 		}
 
 		// [HttpPost]
@@ -51,36 +47,21 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(401)]
 		public async Task<IActionResult> Login([FromBody] RegisterDTO user)
 		{
-			if (user != null && !string.IsNullOrWhiteSpace(user.UserEmail))
-			{
-				var users = _userManager.Users.ToList();
-				//Check if the user exists on the database
-				var userIdentity = await _userManager.FindByEmailAsync(user.UserEmail);
-				if (userIdentity != null)
-				{
-					// Efetua o login com base no Id do usuário e sua senha
-					var loginResult = await _signInManager.CheckPasswordSignInAsync(userIdentity, user.Password, false);
-					if (!loginResult.Succeeded)
-						return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
-					else
-					{
-						return GenerateToken(userIdentity);
-					}
-				}
-				else
-					return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
-			}
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
-			return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status400BadRequest, Constants.BADREQUEST);
+			var userIdentity = await _loginService.ValidateUser(user);
+			if (userIdentity == null)
+				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
+			else
+				//This should be a method in Service and we should return the result of the method.
+				return GenerateToken(userIdentity);
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Refresh(string token, string refreshToken)
 		{
-			//TODO we need to check all the possible ways this breaks
-			var principal = GetPrincipalFromExpiredToken(token);
-			//Retrieving user from database
-			var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+			var user = await _loginService.GetUserFromToken(token);
 			if (user.RefreshToken != refreshToken)
 				throw new SecurityTokenException("Invalid refresh token");
 
@@ -88,20 +69,14 @@ namespace PlantsIdentifierAPI.Controllers
 			var newRefreshToken = GenerateRefreshToken();
 
 			//TODO We need to make this method more generic so that we only need to check this one method for a point of failure.
-			ReplaceRefreshToken(user, newRefreshToken);
+			_loginService.ReplaceRefreshToken(user, newRefreshToken);
 			return new ObjectResult(new
 			{
 				token = newJwtToken,
 				refreshToken = newRefreshToken
 			});
 		}
-
-		void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken)
-		{
-			//TODO we need to check if this returns an error or not with a try catch
-			user.RefreshToken = newRefreshToken;
-			_userManager.UpdateAsync(user);
-		}
+		
 
 		IActionResult GenerateToken(ApplicationUser userIdentity)
 		{
@@ -148,23 +123,7 @@ namespace PlantsIdentifierAPI.Controllers
 			}
 		}
 
-		internal ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
-		{
-			var tokenValidationParameters = new TokenValidationParameters
-			{
-				ValidateAudience = true, //you might want to validate the audience and issuer depending on your use case
-				ValidateIssuer = true,
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = _signingConfigurations.Key,
-				ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
-			};
-
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-			if (!(securityToken is JwtSecurityToken jwtSecurityToken) || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-				throw new SecurityTokenException("Invalid token");
-			return principal;
-		}
+		
 
 	}
 }
