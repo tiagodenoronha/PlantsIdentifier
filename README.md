@@ -14,19 +14,23 @@ All connections from the App pass through the backend to be able to monitor it a
 
 You can build and run the project from command line using:
 
-1. Move to the project directory.
+1. Clone this repository to your local machine.
 ```
-$ cd src/PlantsIdentifierAPI
+$ git clone https://github.com/tiagodenoronha/PlantsIdentifier.git
 ```
-2. Restore packages.
+2. Move to the project directory.
+```
+$ cd PlantsIdentifier/src/PlantsIdentifierAPI
+```
+3. Restore packages.
 ```
 $ dotnet restore
 ```
-3. Initialize the database.
+4. Initialize the database.
 ```
 $ dotnet ef database update
 ```
-4. Run the project.
+5. Run the project.
 ```
 $ dotnet run
 ```
