@@ -83,13 +83,13 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         public void Plants_GetPlantByCommonName_ReturnsOk()
         {
         }
-
+        
         [Fact]
-        public void Plants_SavePlant_ReturnsOk()
+        public void Plants_SavePlant_ReturnsNull()
         { }
 
         [Fact]
-        public void Plants_SavePlant_ReturnsNull()
+        public void Plants_SavePlant_ReturnsOk()
         { }
 
 
