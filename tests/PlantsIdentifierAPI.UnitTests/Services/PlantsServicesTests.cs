@@ -17,29 +17,27 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		public DbContextOptions<PlantsContext> DefaultOptions { get; } = new DbContextOptionsBuilder<PlantsContext>().Options;
 
 		[Fact]
-		public void Plants_GetAll_ReturnsOk()
+		public void Plants_GetAll_ReturnsOneElement()
 		{
-			var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
-			//var usersDbSetMock = dbContextMock.CreateDbSetMock(x => x.Plant, initialEntities);
-
 			//Arrange
-			//var mockContext = new Mock<PlantsContext>();
+			var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
+			var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { } });
 			var service = new PlantsServices(dbContextMock.Object);
 
 			//Act
 			var result = service.GetAll();
 
 			//Assert
-			Assert.Empty(result);
+			Assert.NotEmpty(result);
 		}
 
 		[Fact]
-		public void Plants_GetAll_ReturnsNull()
+		public void Plants_GetAll_ReturnsEmpty()
 		{
-			var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
-			var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant, new List<Plant>());
 
 			//Arrange
+			var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
+			var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant);
 			var service = new PlantsServices(dbContextMock.Object);
 
 			//Act
