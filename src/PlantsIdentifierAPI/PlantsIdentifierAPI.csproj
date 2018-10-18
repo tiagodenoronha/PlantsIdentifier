@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFrameworkCoreMock.Moq" Version="1.0.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="2.1.4" />
   </ItemGroup>
