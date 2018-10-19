@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
 using System;
@@ -8,22 +10,30 @@ using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Services
 {
-	public class PlantsServices : IPlantsServices
-	{
-		readonly PlantsContext _plantsContext;
+    public class PlantsServices : IPlantsServices
+    {
+        readonly PlantsContext _plantsContext;
+        readonly IMapper _mapper;
 
-		public PlantsServices(PlantsContext plantsContext)
-		{
-			_plantsContext = plantsContext;
-		}
+        public PlantsServices(PlantsContext plantsContext, IMapper mapper)
+        {
+            _plantsContext = plantsContext;
+            _mapper = mapper;
 
-		public IEnumerable<Plant> GetAll() => _plantsContext.Plant.AsEnumerable();
-		public async Task<Plant> GetPlant(string ID) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
-		public async Task<Plant> GetPlantByCommonName(string commonName) => await _plantsContext.Plant.FirstOrDefaultAsync(p => p.CommonName == commonName);
-		public void SavePlant(Plant plant)
-		{
-			_plantsContext.Plant.Add(plant);
-			_plantsContext.SaveChanges();
-		}
-	}
+        }
+
+        public IEnumerable<PlantDTO> GetAll()
+        {
+            var plants = _plantsContext.Plant.ToArray();
+            for(var i = 0; i< plants.Count(); i++)
+            yield return _mapper.Map<PlantDTO>(plants[i]);
+        }
+        public async Task<PlantDTO> GetPlant(string ID) => _mapper.Map<PlantDTO>(await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID)));
+        public async Task<PlantDTO> GetPlantByCommonName(string commonName) => _mapper.Map<PlantDTO>(await _plantsContext.Plant.FirstOrDefaultAsync(p => p.CommonName == commonName));
+        public void SavePlant(PlantDTO plant)
+        {
+            _plantsContext.Plant.Add(_mapper.Map<Plant>(plant));
+            _plantsContext.SaveChanges();
+        }
+    }
 }

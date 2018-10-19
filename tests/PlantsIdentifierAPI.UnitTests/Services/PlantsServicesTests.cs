@@ -1,4 +1,5 @@
-﻿using EntityFrameworkCoreMock;
+﻿using AutoMapper;
+using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using PlantsIdentifierAPI.Interfaces;
@@ -22,8 +23,9 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         {
             //Arrange
             var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
+            var mapperMock = new Mock<IMapper>();
             var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { } });
-            var service = new PlantsServices(dbContextMock.Object);
+            var service = new PlantsServices(dbContextMock.Object, mapperMock.Object);
 
             //Act
             var result = service.GetAll();
@@ -40,8 +42,9 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 
             //Arrange
             var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
+            var mapperMock = new Mock<IMapper>();
             var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant);
-            var service = new PlantsServices(dbContextMock.Object);
+            var service = new PlantsServices(dbContextMock.Object, mapperMock.Object);
 
             //Act
             var result = service.GetAll();

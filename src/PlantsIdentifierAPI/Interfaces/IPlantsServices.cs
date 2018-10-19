@@ -1,4 +1,5 @@
-﻿using PlantsIdentifierAPI.Models;
+﻿using PlantsIdentifierAPI.DTOS;
+using PlantsIdentifierAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace PlantsIdentifierAPI.Interfaces
 {
 	public interface IPlantsServices
 	{
-		Task<Plant> GetPlant(string ID);
-		IEnumerable<Plant> GetAll();
-		Task<Plant> GetPlantByCommonName(string commonName);
-		void SavePlant(Plant plant);
+		Task<PlantDTO> GetPlant(string ID);
+		IEnumerable<PlantDTO> GetAll();
+		Task<PlantDTO> GetPlantByCommonName(string commonName);
+		void SavePlant(PlantDTO plant);
 	}
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PlantsIdentifierAPI.Controllers;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
 using System;
@@ -24,7 +25,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var result = controller.Get();
 
 			//Assert
-			Assert.IsType<ActionResult<IEnumerable<Plant>>>(result);
+			Assert.IsType<ActionResult<IEnumerable<PlantDTO>>>(result);
 			Assert.Null(result.Value);
 
 		}
@@ -34,16 +35,16 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			var numberOfPlants = 5;
 			var mockRepo = new Mock<IPlantsServices>();
-			mockRepo.Setup(repo => repo.GetAll()).Returns(Enumerable.Repeat(Mock.Of<Plant>(), numberOfPlants));
+			mockRepo.Setup(repo => repo.GetAll()).Returns(Enumerable.Repeat(Mock.Of<PlantDTO>(), numberOfPlants));
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
 			var result = controller.Get();
 			var contentResult = result.Result as OkObjectResult;
-			var plants = (IEnumerable<Plant>)contentResult.Value;
+			var plants = (IEnumerable<PlantDTO>)contentResult.Value;
 
 			//Assert
-			Assert.IsType<ActionResult<IEnumerable<Plant>>>(result);
+			Assert.IsType<ActionResult<IEnumerable<PlantDTO>>>(result);
 			Assert.NotNull(contentResult.Value);
 			Assert.NotEmpty(plants);
 		}
@@ -54,17 +55,17 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			var guidToSearchFor = Guid.NewGuid();			
 			var mockRepo = new Mock<IPlantsServices>();
-			mockRepo.Setup(repo => repo.GetPlant(It.IsAny<string>())).Returns(Task.FromResult(Mock.Of<Plant>(p => p.ID == guidToSearchFor)));
+			mockRepo.Setup(repo => repo.GetPlant(It.IsAny<string>())).Returns(Task.FromResult(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor)));
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
 			var result = await controller.Get(guidToSearchFor.ToString());
 
 			var contentResult = result.Result as OkObjectResult;
-			var plant = (Plant)contentResult.Value;
+			var plant = (PlantDTO)contentResult.Value;
 
 			//Assert
-			Assert.IsType<ActionResult<Plant>>(result);
+			Assert.IsType<ActionResult<PlantDTO>>(result);
 			Assert.NotNull(contentResult.Value);
 			Assert.Equal(guidToSearchFor, plant.ID);
 		}
@@ -82,7 +83,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var contentResult = result.Result as NotFoundObjectResult;
 
 			//Assert
-			Assert.IsType<ActionResult<Plant>>(result);
+			Assert.IsType<ActionResult<PlantDTO>>(result);
 			Assert.NotNull(contentResult);
 		}
 
@@ -94,7 +95,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
-			var result = await controller.Post(Mock.Of<Plant>());
+			var result = await controller.Post(Mock.Of<PlantDTO>());
 			var contentResult = result.Result as OkObjectResult;
 			var inserted = (bool)contentResult.Value;
 
@@ -107,7 +108,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		public async Task Plants_GetOneFromID_ReturnsConflict()
 		{
 			var commonName = "Plant";
-			var plant = Mock.Of<Plant>();
+			var plant = Mock.Of<PlantDTO>();
 
 			//Arrange
 			var mockRepo = new Mock<IPlantsServices>();
@@ -115,7 +116,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
-			var result = await controller.Post(Mock.Of<Plant>(p => p.CommonName == commonName));
+			var result = await controller.Post(Mock.Of<PlantDTO>(p => p.CommonName == commonName));
 			var contentResult = result.Result as ConflictObjectResult;
 
 			//Assert

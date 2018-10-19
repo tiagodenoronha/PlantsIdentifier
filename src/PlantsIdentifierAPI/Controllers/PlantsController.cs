@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlantsIdentifierAPI.Interfaces;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Controllers
@@ -23,7 +25,7 @@ namespace PlantsIdentifierAPI.Controllers
 		// GET api/plants
 		[HttpGet]
 		[ProducesResponseType(200)]
-		public ActionResult<IEnumerable<Plant>> Get()
+		public ActionResult<IEnumerable<PlantDTO>> Get()
 		{
 			try
 			{
@@ -45,7 +47,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		//Returns this because the Plant may not exist
 		[ProducesResponseType(404)]
-		public async Task<ActionResult<Plant>> Get(string ID)
+		public async Task<ActionResult<PlantDTO>> Get(string ID)
 		{
 			try
 			{
@@ -65,7 +67,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(409)]
 		[ProducesResponseType(500)]
-		public async Task<ActionResult<bool>> Post([FromBody] Plant plant)
+		public async Task<ActionResult<bool>> Post([FromBody] PlantDTO plant)
 		{
 			if (!ModelState.IsValid)
 			{

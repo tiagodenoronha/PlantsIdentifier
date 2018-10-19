@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +35,8 @@ namespace PlantsIdentifierAPI
             //services.AddDbContext<PlantsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            // provide the auto-mapper
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
