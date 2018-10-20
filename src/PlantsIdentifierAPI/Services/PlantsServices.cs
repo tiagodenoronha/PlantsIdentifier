@@ -19,7 +19,6 @@ namespace PlantsIdentifierAPI.Services
         {
             _plantsContext = plantsContext;
             _mapper = mapper;
-
         }
 
         public IEnumerable<PlantDTO> GetAll()

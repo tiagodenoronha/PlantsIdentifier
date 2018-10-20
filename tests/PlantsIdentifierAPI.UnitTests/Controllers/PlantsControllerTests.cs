@@ -27,8 +27,8 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Assert
 			Assert.IsType<ActionResult<IEnumerable<PlantDTO>>>(result);
 			Assert.Null(result.Value);
-
 		}
+
 		[Fact]
 		public void Plants_GetAll_ReturnsOk()
 		{
@@ -120,8 +120,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var contentResult = result.Result as ConflictObjectResult;
 
 			//Assert
-			Assert.IsType<ActionResult<bool>>(result);
-			
+			Assert.IsType<ActionResult<bool>>(result);			
 		}
 	}
 }
