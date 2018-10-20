@@ -25,10 +25,14 @@ namespace PlantsIdentifierAPI.Services
         public IEnumerable<PlantDTO> GetAll()
         {
             var plants = _plantsContext.Plant.ToArray();
-            for(var i = 0; i< plants.Count(); i++)
-            yield return _mapper.Map<PlantDTO>(plants[i]);
+            for (var i = 0; i < plants.Count(); i++)
+                yield return _mapper.Map<PlantDTO>(plants[i]);
         }
-        public async Task<PlantDTO> GetPlant(string ID) => _mapper.Map<PlantDTO>(await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID)));
+        public async Task<PlantDTO> GetPlant(string ID)
+        {
+            var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
+            return _mapper.Map<PlantDTO>(plant);
+        }
         public async Task<PlantDTO> GetPlantByCommonName(string commonName) => _mapper.Map<PlantDTO>(await _plantsContext.Plant.FirstOrDefaultAsync(p => p.CommonName == commonName));
         public void SavePlant(PlantDTO plant)
         {

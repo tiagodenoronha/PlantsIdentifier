@@ -84,22 +84,44 @@ namespace PlantsIdentifierAPI.UnitTests.Services
             var result = await service.GetPlant(plantID.ToString());
 
             //Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.ID, plantID);
+        }
+
+        [Fact]
+        public async Task Plants_GetPlantByCommonName_ReturnsNull()
+        {
+            //Arrange
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
+
+            //Act
+            var result = await service.GetPlantByCommonName(Moq.It.IsAny<string>());
+
+            //Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public void Plants_GetPlantByCommonName_ReturnsNull()
+        public async Task Plants_GetPlantByCommonName_ReturnsOk()
         {
-        }
+            //Arrange
+            var plantName = "Plant";
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { CommonName = plantName } });
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
-        [Fact]
-        public void Plants_GetPlantByCommonName_ReturnsOk()
-        {
+            //Act
+            var result = await service.GetPlantByCommonName(plantName);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.CommonName, plantName);
         }
 
         [Fact]
         public void Plants_SavePlant_ReturnsNull()
-        { }
+        {
+        }
 
         [Fact]
         public void Plants_SavePlant_ReturnsOk()
