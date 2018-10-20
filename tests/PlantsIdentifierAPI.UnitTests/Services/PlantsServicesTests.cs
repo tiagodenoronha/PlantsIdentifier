@@ -9,12 +9,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace PlantsIdentifierAPI.UnitTests.Services
 {
     public class PlantsServicesTests
     {
+        readonly DbContextMock<PlantsContext> _dbContextMock;
+        readonly Mock<IMapper> _mapperMock;
+
+        public PlantsServicesTests()
+        {
+            _dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
+            _mapperMock = new Mock<IMapper>();
+        }
 
         public DbContextOptions<PlantsContext> DefaultOptions { get; } = new DbContextOptionsBuilder<PlantsContext>().Options;
 
@@ -22,10 +31,8 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         public void Plants_GetAll_ReturnsOneElement()
         {
             //Arrange
-            var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
-            var mapperMock = new Mock<IMapper>();
-            var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { } });
-            var service = new PlantsServices(dbContextMock.Object, mapperMock.Object);
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { } });
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
             //Act
             var result = service.GetAll();
@@ -39,12 +46,9 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         [Fact]
         public void Plants_GetAll_ReturnsEmpty()
         {
-
             //Arrange
-            var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
-            var mapperMock = new Mock<IMapper>();
-            var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant);
-            var service = new PlantsServices(dbContextMock.Object, mapperMock.Object);
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
             //Act
             var result = service.GetAll();
@@ -55,26 +59,32 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         }
 
         [Fact]
-        public void Plants_GetPlantByID_ReturnsNull()
+        public async Task Plants_GetPlantByID_ReturnsNull()
         {
-
             //Arrange
-            //var dbContextMock = new DbContextMock<PlantsContext>(DefaultOptions);
-            //var plantsInitialDBSet = dbContextMock.CreateDbSetMock(x => x.Plant);
-            //var service = new PlantsServices(dbContextMock.Object);
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
-            ////Act
-            //var result = service.GetAll();
+            //Act
+            var result = await service.GetPlant(Moq.It.IsAny<string>());
 
-            ////Assert
-            //Assert.NotNull(result);
-            //Assert.Empty(result);
+            //Assert
+            Assert.Null(result);
         }
 
         [Fact]
-        public void Plants_GetPlantByID_ReturnsOk()
+        public async Task Plants_GetPlantByID_ReturnsOk()
         {
+            //Arrange
+            var plantID = Guid.NewGuid();
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { ID = plantID } });
+            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
+            //Act
+            var result = await service.GetPlant(plantID.ToString());
+
+            //Assert
+            Assert.Null(result);
         }
 
         [Fact]
@@ -86,7 +96,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
         public void Plants_GetPlantByCommonName_ReturnsOk()
         {
         }
-        
+
         [Fact]
         public void Plants_SavePlant_ReturnsNull()
         { }

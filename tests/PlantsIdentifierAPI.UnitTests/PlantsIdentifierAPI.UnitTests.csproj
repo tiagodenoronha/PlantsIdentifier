@@ -22,4 +22,10 @@
     <ProjectReference Include="..\..\src\PlantsIdentifierAPI\PlantsIdentifierAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="xunit.runner">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

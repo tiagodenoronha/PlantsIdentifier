@@ -50,7 +50,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
-		public async Task Plants_GetOneFromID_ReturnsValue()
+		public async Task Plants_GetOneFromID_ReturnsOk()
 		{
 			//Arrange
 			var guidToSearchFor = Guid.NewGuid();			
@@ -105,7 +105,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
-		public async Task Plants_GetOneFromID_ReturnsConflict()
+		public async Task Plants_Insert_ReturnsConflict()
 		{
 			var commonName = "Plant";
 			var plant = Mock.Of<PlantDTO>();
