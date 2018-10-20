@@ -39,7 +39,6 @@ namespace PlantsIdentifierAPI.Controllers
 			{
 				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, ex.Message);
 			}
-
 		}
 
 		// GET api/plants/5

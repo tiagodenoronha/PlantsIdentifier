@@ -2,6 +2,7 @@
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
 using PlantsIdentifierAPI.Services;
@@ -72,21 +73,21 @@ namespace PlantsIdentifierAPI.UnitTests.Services
             Assert.Null(result);
         }
 
-        [Fact]
-        public async Task Plants_GetPlantByID_ReturnsOk()
-        {
-            //Arrange
-            var plantID = Guid.NewGuid();
-            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { ID = plantID } });
-            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
+        //[Fact]
+        //public async Task Plants_GetPlantByID_ReturnsOk()
+        //{
+        //    //Arrange
+        //    var plantID = Guid.NewGuid();
+        //    var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { ID = plantID } });
+        //    var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
-            //Act
-            var result = await service.GetPlant(plantID.ToString());
+        //    //Act
+        //    var result = await service.GetPlant(plantID.ToString());
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal(result.ID, plantID);
-        }
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.Equal(result.ID, plantID);
+        //}
 
         [Fact]
         public async Task Plants_GetPlantByCommonName_ReturnsNull()
@@ -102,26 +103,35 @@ namespace PlantsIdentifierAPI.UnitTests.Services
             Assert.Null(result);
         }
 
-        [Fact]
-        public async Task Plants_GetPlantByCommonName_ReturnsOk()
-        {
-            //Arrange
-            var plantName = "Plant";
-            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { CommonName = plantName } });
-            var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
+        //[Fact]
+        //public async Task Plants_GetPlantByCommonName_ReturnsOk()
+        //{
+        //    //Arrange
+        //    var plantName = "Plant";
+        //    var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { CommonName = plantName } });
+        //    var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
 
-            //Act
-            var result = await service.GetPlantByCommonName(plantName);
+        //    //Act
+        //    var result = await service.GetPlantByCommonName(plantName);
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal(result.CommonName, plantName);
-        }
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.Equal(result.CommonName, plantName);
+        //}
 
-        [Fact]
-        public void Plants_SavePlant_ReturnsNull()
-        {
-        }
+        //[Fact]
+        //public void Plants_SavePlant_ReturnsNull()
+        //{
+        //    //Arrange
+        //    var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
+        //    var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
+
+        //    //Act
+        //    service.SavePlant(Mock.Of<PlantDTO>());
+
+        //    //Assert
+        //    Assert.NotEmpty(_dbContextMock.Object.Plant);
+        //}
 
         [Fact]
         public void Plants_SavePlant_ReturnsOk()
