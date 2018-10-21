@@ -46,7 +46,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		//Returns this because the Plant may not exist
 		[ProducesResponseType(404)]
-		public async Task<ActionResult<PlantDTO>> Get(string ID)
+		public async Task<ActionResult<PlantDTO>> Get(Guid ID)
 		{
 			try
 			{

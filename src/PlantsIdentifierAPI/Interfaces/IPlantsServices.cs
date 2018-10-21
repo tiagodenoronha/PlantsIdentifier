@@ -9,7 +9,7 @@ namespace PlantsIdentifierAPI.Interfaces
 {
 	public interface IPlantsServices
 	{
-		Task<PlantDTO> GetPlant(string ID);
+		Task<PlantDTO> GetPlant(Guid ID);
 		IEnumerable<PlantDTO> GetAll();
 		Task<PlantDTO> GetPlantByCommonName(string commonName);
 		void SavePlant(PlantDTO plant);
