@@ -27,7 +27,7 @@ namespace PlantsIdentifierAPI.Services
             for (var i = 0; i < plants.Count(); i++)
                 yield return _mapper.Map<PlantDTO>(plants[i]);
         }
-        public async Task<PlantDTO> GetPlant(string ID)
+        public async Task<PlantDTO> GetPlant(Guid ID)
         {
             var plant = await _plantsContext.Plant.FirstOrDefaultAsync(p => p.ID.Equals(ID));
             return _mapper.Map<PlantDTO>(plant);

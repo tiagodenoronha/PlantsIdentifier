@@ -55,11 +55,11 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			var guidToSearchFor = Guid.NewGuid();			
 			var mockRepo = new Mock<IPlantsServices>();
-			mockRepo.Setup(repo => repo.GetPlant(It.IsAny<string>())).Returns(Task.FromResult(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor)));
+			mockRepo.Setup(repo => repo.GetPlant(It.IsAny<Guid>())).Returns(Task.FromResult(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor)));
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
-			var result = await controller.Get(guidToSearchFor.ToString());
+			var result = await controller.Get(guidToSearchFor);
 
 			var contentResult = result.Result as OkObjectResult;
 			var plant = (PlantDTO)contentResult.Value;
@@ -79,7 +79,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var controller = new PlantsController(mockRepo.Object);
 
 			//Act
-			var result = await controller.Get(Guid.NewGuid().ToString());
+			var result = await controller.Get(Guid.NewGuid());
 			var contentResult = result.Result as NotFoundObjectResult;
 
 			//Assert
