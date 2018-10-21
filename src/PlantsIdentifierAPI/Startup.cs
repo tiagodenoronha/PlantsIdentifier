@@ -29,10 +29,10 @@ namespace PlantsIdentifierAPI
         public void ConfigureServices(IServiceCollection services)
         {
             ///////////////////////// using a local .db file /////////////////////////
-            services.AddDbContext<PlantsContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
+            //services.AddDbContext<PlantsContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
 
             /////////////////////////using a docker container with an SQL Server /////////////////////////
-            //services.AddDbContext<PlantsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
+            services.AddDbContext<PlantsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             // provide the auto-mapper

@@ -1,5 +1,5 @@
 using AutoMapper;
-using PlantsIdentifierAPI.Dtos;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Helpers
@@ -9,8 +9,8 @@ namespace PlantsIdentifierAPI.Helpers
         public AutoMapperProfile()
         {
             // Configure DTO mapping
-            CreateMap<Plant, PlantDto>();
-            CreateMap<PlantDto, Plant>();
+            CreateMap<Plant, PlantDTO>();
+            CreateMap<PlantDTO, Plant>();
         }
     }
 }
