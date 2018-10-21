@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Models;
 using PlantsIdentifierAPI.Services;
@@ -99,41 +101,34 @@ namespace PlantsIdentifierAPI.UnitTests.Services
             Assert.Null(result);
         }
 
-        //[Fact]
-        //public async Task Plants_GetPlantByCommonName_ReturnsOk()
-        //{
-        //    //Arrange
-        //    var plantName = "Plant";
-        //    var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { CommonName = plantName } });
-        //    var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
+        [Fact]
+        public async Task Plants_GetPlantByCommonName_ReturnsOk()
+        {
+            //Arrange
+            var plantName = "Plant";
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant, new[] { new Plant { CommonName = plantName } });
+            var service = new PlantsServices(_dbContextMock.Object, _mapper);
 
-        //    //Act
-        //    var result = await service.GetPlantByCommonName(plantName);
+            //Act
+            var result = await service.GetPlantByCommonName(plantName);
 
-        //    //Assert
-        //    Assert.NotNull(result);
-        //    Assert.Equal(result.CommonName, plantName);
-        //}
-
-        //[Fact]
-        //public void Plants_SavePlant_ReturnsNull()
-        //{
-        //    //Arrange
-        //    var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
-        //    var service = new PlantsServices(_dbContextMock.Object, _mapperMock.Object);
-
-        //    //Act
-        //    service.SavePlant(Mock.Of<PlantDTO>());
-
-        //    //Assert
-        //    Assert.NotEmpty(_dbContextMock.Object.Plant);
-        //}
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.CommonName, plantName);
+        }
 
         [Fact]
         public void Plants_SavePlant_ReturnsOk()
-        { }
+        {
+            //Arrange
+            var plantsInitialDBSet = _dbContextMock.CreateDbSetMock(x => x.Plant);
+            var service = new PlantsServices(_dbContextMock.Object, _mapper);
 
+            //Act
+            service.SavePlant(Mock.Of<PlantDTO>());
 
-
+            //Assert
+            Assert.NotEmpty(_dbContextMock.Object.Plant);
+        }
     }
 }
