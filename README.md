@@ -38,6 +38,10 @@ $ dotnet run
 
 ## Contributing
 
+First of all, thank you to everyone who contributes!
+
+[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/0)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/0)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/1)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/1)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/2)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/2)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/3)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/3)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/4)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/4)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/5)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/5)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/6)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/6)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/7)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/7)
+
 If you are interested in fixing issues and contributing directly to the code base, be my guest! Just fork the repo and do your magic! :)
 
 Please see also the [Code of Conduct](CODE_OF_CONDUCT.md).
