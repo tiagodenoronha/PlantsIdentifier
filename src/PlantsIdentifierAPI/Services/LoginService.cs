@@ -46,7 +46,7 @@ namespace PlantsIdentifierAPI.Services
 			_userManager.UpdateAsync(user);
 		}
 
-		public async Task<ApplicationUser> ValidateUser(RegisterDTO user)
+		public async Task<ApplicationUser> ValidateUser(LoginDTO user)
 		{
 			if (user != null && !string.IsNullOrWhiteSpace(user.UserEmail))
 			{
