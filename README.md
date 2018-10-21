@@ -1,12 +1,40 @@
 # PlantsIdentifier
 
+[![Build Status](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_apis/build/status/PlantsIdentifier-CI)](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_build/latest?definitionId=4)
+[![CodeFactor](https://www.codefactor.io/repository/github/tiagodenoronha/plantsidentifier/badge)](https://www.codefactor.io/repository/github/tiagodenoronha/plantsidentifier)
+
 I recently adopted a cat and found out there are some plants that are dangerous for him! So i've set out to build a mobile App which leverages Azure Custom Vision. 
 
 It is a Xamarin.Forms App, with a .NET Core support Backend (yes, I use a Mac with VSCode :) ). 
-All connections from the App (except authentication probably, still thinking about client-side or server-side) pass through the backend to be able to monitor it a bit better.
+All connections from the App pass through the backend to be able to monitor it a bit better.
 
 [![Bugs](https://img.shields.io/github/issues/tiagodenoronha/PlantsIdentifier.svg)](https://github.com/tiagodenoronha/PlantsIdentifier/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/tiagodenoronha/PlantsIdentifier/.svg?style=social)](https://twitter.com/intent/tweet?text=This%20is%20awesome!&url=https%3A%2F%2Fgithub.com%2Ftiagodenoronha%2FPlantsIdentifier%2F)
+
+## Getting Started
+
+You can build and run the project from command line using:
+
+1. Clone this repository to your local machine.
+```
+$ git clone https://github.com/tiagodenoronha/PlantsIdentifier.git
+```
+2. Move to the project directory.
+```
+$ cd PlantsIdentifier/src/PlantsIdentifierAPI
+```
+3. Restore packages.
+```
+$ dotnet restore
+```
+4. Initialize the database.
+```
+$ dotnet ef database update
+```
+5. Run the project.
+```
+$ dotnet run
+```
 
 ## Contributing
 

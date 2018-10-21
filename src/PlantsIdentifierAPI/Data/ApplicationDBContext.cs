@@ -17,6 +17,6 @@ namespace PlantsIdentifierAPI.Data
         {
         }
 
-        public DbSet<Plant> Plant { get; set; }
+        public virtual DbSet<Plant> Plant { get; set; }
     }
 }

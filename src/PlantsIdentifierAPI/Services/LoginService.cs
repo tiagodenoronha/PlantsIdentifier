@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Data;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;

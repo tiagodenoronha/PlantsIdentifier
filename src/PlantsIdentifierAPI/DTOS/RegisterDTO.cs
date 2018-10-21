@@ -1,4 +1,4 @@
-namespace PlantsIdentifierAPI.Models
+namespace PlantsIdentifierAPI.DTOS
 {
     public class RegisterDTO
     {
