@@ -22,23 +22,43 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			_loginService = new Mock<ILoginService>();
 		}
 
-		//[Fact]
-		//public async Task Login_Login_ReturnsOk()
-		//{
-		//	//Arrange
-		//	var useremail = "user";
-		//	var mockDTO = Mock.Of<RegisterDTO>(u => u.UserEmail == useremail);
-		//	var mockUser = Mock.Of<ApplicationUser>(appuser => appuser.Email == useremail);
-		//	_loginService.Setup(service => service.ValidateUser(mockDTO)).Returns(Task.FromResult(mockUser));
-		//	//_loginService.Setup(service => service.GenerateToken(mockUser)).Returns(Mock.Of<TokenModel>());
-		//	var controller = new LoginController(_loginService.Object);
+		[Fact]
+		public async Task Login_Login_ReturnsOk()
+		{
+			//Arrange
+			var mockUser = Mock.Of<ApplicationUser>();
+			var mockToken = new TokenModel();
 
-		//	//Act
-		//	var result = await controller.Login(Mock.Of<RegisterDTO>()) as OkObjectResult;
+			//This fails, for some reason...
+			//var mockToken = Mock.Of<TokenModel>();
+			_loginService.Setup(service => service.ValidateUser(It.IsAny<LoginDTO>())).Returns(Task.FromResult(Mock.Of<ApplicationUser>()));
+			_loginService.Setup(service => service.GenerateToken(It.IsAny<ApplicationUser>())).Returns(mockToken);
+			var controller = new LoginController(_loginService.Object);
 
-		//	//Assert
-		//	Assert.IsType<ActionResult<TokenModel>>(result);
-		//	Assert.NotNull(result);
-		//}
+			//Act
+			var result = await controller.Login(Mock.Of<LoginDTO>()) as OkObjectResult;
+
+			//Assert
+			Assert.NotNull(result);
+			Assert.IsAssignableFrom<ActionResult>(result);
+			Assert.NotNull(result.Value);
+		}
+		[Fact]
+		public async Task Login_Login_ReturnsUnauthorized()
+		{
+			//Arrange
+			var mockUser = Mock.Of<ApplicationUser>();
+						_loginService.Setup(service => service.ValidateUser(It.IsAny<LoginDTO>())).Returns(Task.FromResult<ApplicationUser>(null));
+			var controller = new LoginController(_loginService.Object);
+
+			//Act
+			var result = await controller.Login(Mock.Of<LoginDTO>());
+			var contentResult = result as ObjectResult;
+
+			//Assert
+			Assert.NotNull(result);
+			Assert.IsType<ObjectResult>(result);
+			Assert.Equal(contentResult.Value, PlantsIdentifierAPI.Helpers.Constants.WRONGEMAILORPASSWORD);
+		}
 	}
 }
