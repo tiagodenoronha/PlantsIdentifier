@@ -74,11 +74,8 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			var service = new LoginService(_userManagerMock.Object, _signinManagerMock,
 				_signingConfigurationsMock.Object, _tokenConfigurationsMock);
 
-			//Act
-			var exception = Assert.Throws<ArgumentNullException>(() => service.GenerateToken(mockUser));
-
 			//Assert
-			Assert.Equal("Value cannot be null.\r\nParameter name: name", exception.Message);
+			var exception = Assert.Throws<ArgumentNullException>(() => service.GenerateToken(mockUser));
 		}
 
 		//[Fact]
