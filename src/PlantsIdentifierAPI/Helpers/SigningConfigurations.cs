@@ -1,20 +1,24 @@
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace PlantsIdentifierAPI.Helpers
 {
-    public class SigningConfigurations
-    {
-        public SecurityKey Key { get; }
-        public SigningCredentials SigningCredentials { get; }
+	public class SigningConfigurations
+	{
+		public SecurityKey Key { get; }
+		public SigningCredentials SigningCredentials { get; }
 
-        public SigningConfigurations(IConfiguration configuration)
-        {
-            Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("TokenSecret")));
+		public SigningConfigurations()
+		{
 
-            SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
-        }
-    }
+		}
+
+		public SigningConfigurations(IConfiguration configuration)
+		{
+			Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("TokenSecret")));
+
+			SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
+		}
+	}
 }

@@ -12,8 +12,8 @@ namespace PlantsIdentifierAPI.UnitTests.Helpers
 {
 	public class FakeUserManager : UserManager<ApplicationUser>
 	{
-		public FakeUserManager()
-			: base(new Mock<IUserStore<ApplicationUser>>().Object,
+		public FakeUserManager(Mock<IUserStore<ApplicationUser>> userStore)
+			: base(userStore.Object,
 			  new Mock<IOptions<IdentityOptions>>().Object,
 			  new Mock<IPasswordHasher<ApplicationUser>>().Object,
 			  new IUserValidator<ApplicationUser>[0],
@@ -29,5 +29,9 @@ namespace PlantsIdentifierAPI.UnitTests.Helpers
 		public override Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role) => Task.FromResult(IdentityResult.Success);
 
 		public override Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user) => Task.FromResult(Guid.NewGuid().ToString());
+
+		public override Task<ApplicationUser> FindByEmailAsync(string email) => Task.FromResult(new ApplicationUser { Email = email });
+
+		public override Task<bool> CheckPasswordAsync(ApplicationUser user, string password) => Task.FromResult(true);
 	}
 }

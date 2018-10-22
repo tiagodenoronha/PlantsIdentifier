@@ -13,8 +13,8 @@ namespace PlantsIdentifierAPI.UnitTests.Helpers
 {
 	public class FakeSignInManager : SignInManager<ApplicationUser>
 	{
-		public FakeSignInManager()
-				: base(new Mock<FakeUserManager>().Object,
+		public FakeSignInManager(Mock<UserManager<ApplicationUser>> usermanager)
+				: base(usermanager.Object,
 					 new Mock<IHttpContextAccessor>().Object,
 					 new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object,
 					 new Mock<IOptions<IdentityOptions>>().Object,

@@ -29,10 +29,13 @@ namespace PlantsIdentifierAPI.Controllers
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
+
 			if (user.Password != user.ConfirmPassword)
 				return BadRequest(Constants.PASSWORDMISMATCH);
+
 			if (await _loginService.UserExists(user.Email))
 				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.USERALREADYEXISTS);
+
 			return await _loginService.CreateUser(user.Username, user.Email, user.Password);
 		}
 
