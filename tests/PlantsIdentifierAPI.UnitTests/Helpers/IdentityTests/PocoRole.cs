@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity.Test;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.AspNetCore.Identity.Test
+namespace PlantsIdentifierAPI.UnitTests.Helpers.IdentityTests
 {
 	/// <summary>
 	///     Represents a Role entity
@@ -71,37 +72,5 @@ namespace Microsoft.AspNetCore.Identity.Test
 		/// A random value that should change whenever a role is persisted to the store
 		/// </summary>
 		public virtual string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
-	}
-
-	/// <summary>
-	///     EntityType that represents one specific role claim
-	/// </summary>
-	public class PocoRoleClaim : PocoRoleClaim<string> { }
-
-	/// <summary>
-	///     EntityType that represents one specific role claim
-	/// </summary>
-	/// <typeparam name="TKey"></typeparam>
-	public class PocoRoleClaim<TKey> where TKey : IEquatable<TKey>
-	{
-		/// <summary>
-		///     Primary key
-		/// </summary>
-		public virtual int Id { get; set; }
-
-		/// <summary>
-		///     User Id for the role this claim belongs to
-		/// </summary>
-		public virtual TKey RoleId { get; set; }
-
-		/// <summary>
-		///     Claim type
-		/// </summary>
-		public virtual string ClaimType { get; set; }
-
-		/// <summary>
-		///     Claim value
-		/// </summary>
-		public virtual string ClaimValue { get; set; }
 	}
 }

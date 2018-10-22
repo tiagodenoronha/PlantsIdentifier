@@ -26,7 +26,6 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		[Fact]
 		public void Plants_GetAll_ReturnsEmpty()
 		{
-
 			//Act
 			var result = _controller.Get();
 
@@ -135,7 +134,6 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		[Fact]
 		public async Task Plants_Insert_ReturnsConflict()
 		{
-
 			//Arrange
 			var commonName = "Plant";
 			var plant = Mock.Of<PlantDTO>();

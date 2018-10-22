@@ -15,6 +15,5 @@ namespace PlantsIdentifierAPI.Interfaces
 		string GenerateRefreshToken();
 		Task<bool> UserExists(string email);
 		Task<IdentityResult> CreateUser(string username, string email, string password);
-
 	}
 }
