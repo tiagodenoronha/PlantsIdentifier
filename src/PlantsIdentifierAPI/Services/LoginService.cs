@@ -109,8 +109,8 @@ namespace PlantsIdentifierAPI.Services
 			return new TokenModel
 			{
 				Authenticated = true,
-				CreatedDate = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
-				ExpirationDate = expiryDate.ToString("yyyy-MM-dd HH:mm:ss"),
+				CreatedDate = createDate.ToString(Constants.DATEFORMAT),
+				ExpirationDate = expiryDate.ToString(Constants.DATEFORMAT),
 				AccessToken = token
 			};
 		}

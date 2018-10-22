@@ -1,3 +1,5 @@
+using System;
+
 namespace PlantsIdentifierAPI.Helpers
 {
 	public static class Constants
@@ -7,5 +9,6 @@ namespace PlantsIdentifierAPI.Helpers
 		public const string INVALIDREFRESHTOKEN = "Invalid refresh token";
 		public const string USERALREADYEXISTS = "A user with this email already exists.";
 		public const string PASSWORDMISMATCH = "The passwords don't match";
+		public const string DATEFORMAT = "yyyy-MM-dd HH:mm:ss";
 	}
 }
