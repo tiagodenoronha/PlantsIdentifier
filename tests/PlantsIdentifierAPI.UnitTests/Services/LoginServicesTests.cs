@@ -48,6 +48,5 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		//	//Assert
 		//	Assert.NotNull(result);
 		//}
-
 	}
 }

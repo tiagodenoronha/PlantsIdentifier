@@ -54,7 +54,7 @@ namespace PlantsIdentifierAPI.Controllers
 		{
 			var user = await _loginService.GetUserFromToken(token);
 			if (user.RefreshToken != refreshToken)
-				throw new SecurityTokenException("Invalid refresh token");
+				throw new SecurityTokenException(Constants.INVALIDREFRESHTOKEN);
 
 			var newJwtToken = _loginService.GenerateToken(user);
 			var newRefreshToken = _loginService.GenerateRefreshToken();
