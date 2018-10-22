@@ -124,5 +124,17 @@ namespace PlantsIdentifierAPI.Services
 				return Convert.ToBase64String(randomNumber);
 			}
 		}
+
+		public async Task<bool> UserExists(string email)
+		{
+			var userIdentity = await _userManager.FindByEmailAsync(email);
+			return userIdentity != null;
+		}
+
+		public async Task<IdentityResult> CreateUser(string username, string email, string password)
+		{
+			var user = new ApplicationUser { UserName = username, Email = email };
+			return await _userManager.CreateAsync(user, password);
+		}
 	}
 }

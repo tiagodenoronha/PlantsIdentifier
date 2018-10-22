@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.DTOS;
+using Microsoft.AspNetCore.Identity;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -20,14 +21,20 @@ namespace PlantsIdentifierAPI.Controllers
 			_loginService = loginService;
 		}
 
-		// [HttpPost]
-		// [ProducesResponseType(200)]
-		// [ProducesResponseType(401)]
-		// [ProducesResponseType(500)]
-		// public IActionResult Register([FromBody] RegisterUser user)
-		// {
-		//     return Ok();
-		// }
+		[HttpPost]
+		[ProducesResponseType(200)]
+		[ProducesResponseType(400)]
+		[ProducesResponseType(401)]
+		public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterDTO user)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+			if (user.Password != user.ConfirmPassword)
+				return BadRequest(Constants.PASSWORDMISMATCH);
+			if (await _loginService.UserExists(user.Email))
+				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.USERALREADYEXISTS);
+			return await _loginService.CreateUser(user.Username, user.Email, user.Password);
+		}
 
 		[HttpPost]
 		[ProducesResponseType(200)]
