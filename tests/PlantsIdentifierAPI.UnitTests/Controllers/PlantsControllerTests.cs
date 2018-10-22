@@ -59,7 +59,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		{
 			//Arrange
 			var guidToSearchFor = Guid.NewGuid();			
-			_mockRepo.Setup(repo => repo.GetPlant(It.IsAny<Guid>())).Returns(Task.FromResult(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor)));
+			_mockRepo.Setup(repo => repo.GetPlant(It.IsAny<Guid>())).ReturnsAsync(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor));
 			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act
@@ -87,6 +87,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Assert
 			Assert.IsType<ActionResult<PlantDTO>>(result);
 			Assert.NotNull(contentResult);
+			Assert.Equal(404, contentResult.StatusCode);
 		}
 
 		[Fact]
@@ -112,7 +113,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var plant = Mock.Of<PlantDTO>();
 
 			//Arrange
-			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).Returns(Task.FromResult(plant));
+			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).ReturnsAsync(plant);
 			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act
@@ -130,7 +131,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var plant = Mock.Of<PlantDTO>(p => p.CommonName == string.Empty);
 
 			//Arrange
-			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).Returns(Task.FromResult(plant));
+			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).ReturnsAsync(plant);
 			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act

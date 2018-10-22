@@ -15,6 +15,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using System.Linq;
 
 namespace PlantsIdentifierAPI.UnitTests.Services
 {
@@ -24,6 +25,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		readonly SignInManager<ApplicationUser> _signinManagerMock;
 		readonly Mock<SigningConfigurations> _signingConfigurationsMock;
 		readonly TokenConfigurations _tokenConfigurationsMock;
+		readonly LoginService _service;
 		//readonly Mock<IUserStore<ApplicationUser>> _userStoreMock;
 
 		public LoginServicesTests()
@@ -45,6 +47,8 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			//_signinManagerMock = new SignInManager<ApplicationUser>(_userManagerMock.Object, contextAccessor.Object, claimsFactory, options.Object, logger.Object, new Mock<IAuthenticationSchemeProvider>().Object);
 			_signingConfigurationsMock = new Mock<SigningConfigurations>();
 			_tokenConfigurationsMock = Mock.Of<TokenConfigurations>();
+			_service = new LoginService(_userManagerMock.Object, _signinManagerMock,
+				_signingConfigurationsMock.Object, _tokenConfigurationsMock);
 		}
 
 		[Fact]
@@ -53,12 +57,10 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			//Arrange
 			var username = "Username";
 			var mockUser = Mock.Of<ApplicationUser>(user => user.UserName == username);
-			var service = new LoginService(_userManagerMock.Object, _signinManagerMock,
-				_signingConfigurationsMock.Object, _tokenConfigurationsMock);
 			_tokenConfigurationsMock.Seconds = 1000;
 
 			//Act
-			var result = service.GenerateToken(mockUser);
+			var result = _service.GenerateToken(mockUser);
 
 			//Assert
 			Assert.NotNull(result);
@@ -71,11 +73,78 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		{
 			//Arrange
 			var mockUser = Mock.Of<ApplicationUser>();
-			var service = new LoginService(_userManagerMock.Object, _signinManagerMock,
-				_signingConfigurationsMock.Object, _tokenConfigurationsMock);
 
 			//Assert
-			var exception = Assert.Throws<ArgumentNullException>(() => service.GenerateToken(mockUser));
+			var exception = Assert.Throws<ArgumentNullException>(() => _service.GenerateToken(mockUser));
+		}
+
+		[Fact]
+		public void Login_ReplaceRefreshToken_ReturnsOk()
+		{
+			//Arrange
+			var mockRefreshToken = "RefreshToken";
+			var otherMockRefreshToken = "RefreshToken2";
+			var mockUser = Mock.Of<ApplicationUser>(user => user.RefreshToken == mockRefreshToken);
+			_userManagerMock.Setup(manager => manager.UpdateAsync(mockUser)).ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
+			_userManagerMock.Object.Users.Append(mockUser);
+
+			//Act
+			_service.ReplaceRefreshToken(mockUser, otherMockRefreshToken);
+
+			//Assert
+			//TODO what should we actually test for?
+		}
+
+		[Fact]
+		public async Task Login_UserExists_ReturnsOk()
+		{
+			//Arrange
+			_userManagerMock.Setup(manager => manager.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(Mock.Of<ApplicationUser>());
+
+			//Act
+			var result = await _service.UserExists(It.IsAny<string>());
+
+			//Assert
+			Assert.True(result);
+		}
+
+		[Fact]
+		public async Task Login_UserExists_ReturnsFalse()
+		{
+			//Arrange
+			_userManagerMock.Setup(manager => manager.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((ApplicationUser)null);
+
+			//Act
+			var result = await _service.UserExists(It.IsAny<string>());
+
+			//Assert
+			Assert.False(result);
+		}
+
+		[Fact]
+		public async Task Login_CreateUser_ReturnsOk()
+		{
+			//Arrange
+			_userManagerMock.Setup(manager => manager.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
+
+			//Act
+			var result = await _service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+
+			//Assert
+			Assert.True(result.Succeeded);
+		}
+
+		[Fact]
+		public async Task Login_CreateUser_ReturnsFalse()
+		{
+			//Arrange
+			_userManagerMock.Setup(manager => manager.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == false));
+
+			//Act
+			var result = await _service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+
+			//Assert
+			Assert.False(result.Succeeded);
 		}
 
 		//[Fact]
@@ -90,7 +159,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 
 
 
-		//	var service = new LoginService(_userManagerMock.Object, _signinManagerMock,
+		//	var _service = new LoginService(_userManagerMock.Object, _signinManagerMock,
 		//		_signingConfigurationsMock.Object, _tokenConfigurationsMock.Object);
 
 		//	//Act

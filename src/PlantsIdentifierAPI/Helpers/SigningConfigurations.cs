@@ -11,7 +11,6 @@ namespace PlantsIdentifierAPI.Helpers
 
 		public SigningConfigurations()
 		{
-
 		}
 
 		public SigningConfigurations(IConfiguration configuration)
