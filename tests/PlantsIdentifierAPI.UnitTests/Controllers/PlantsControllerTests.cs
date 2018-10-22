@@ -15,20 +15,20 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 	public class PlantsControllerTests
 	{
 		readonly Mock<IPlantsServices> _mockRepo;
+		readonly PlantsController _controller;
 
 		public PlantsControllerTests()
 		{
 			_mockRepo = new Mock<IPlantsServices>();
+			_controller = new PlantsController(_mockRepo.Object);
 		}
 
 		[Fact]
 		public void Plants_GetAll_ReturnsEmpty()
 		{
-			//Arrange
-			var controller = new PlantsController(_mockRepo.Object);
-			
+
 			//Act
-			var result = controller.Get();
+			var result = _controller.Get();
 
 			//Assert
 			Assert.IsType<ActionResult<IEnumerable<PlantDTO>>>(result);
@@ -41,10 +41,9 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			var numberOfPlants = 5;
 			_mockRepo.Setup(repo => repo.GetAll()).Returns(Enumerable.Repeat(Mock.Of<PlantDTO>(), numberOfPlants));
-			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act
-			var result = controller.Get();
+			var result = _controller.Get();
 			var contentResult = result.Result as OkObjectResult;
 			var plants = (IEnumerable<PlantDTO>)contentResult.Value;
 
@@ -55,15 +54,31 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
+		public void Plants_GetAll_ReturnsInternalError()
+		{
+			//Arrange
+			var exceptionMessage = "Message";
+			_mockRepo.Setup(repo => repo.GetAll()).Throws(Mock.Of<Exception>(ex => ex.Message == exceptionMessage));
+
+			//Act
+			var result = _controller.Get();
+			var contentResult = result.Result as ObjectResult;
+
+			//Assert
+			Assert.IsType<ActionResult<IEnumerable<PlantDTO>>>(result);
+			Assert.Equal(500, contentResult.StatusCode);
+			Assert.Equal(exceptionMessage, contentResult.Value);
+		}
+
+		[Fact]
 		public async Task Plants_GetOneFromID_ReturnsOk()
 		{
 			//Arrange
-			var guidToSearchFor = Guid.NewGuid();			
+			var guidToSearchFor = Guid.NewGuid();
 			_mockRepo.Setup(repo => repo.GetPlant(It.IsAny<Guid>())).ReturnsAsync(Mock.Of<PlantDTO>(p => p.ID == guidToSearchFor));
-			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act
-			var result = await controller.Get(guidToSearchFor);
+			var result = await _controller.Get(guidToSearchFor);
 
 			var contentResult = result.Result as OkObjectResult;
 			var plant = (PlantDTO)contentResult.Value;
@@ -77,11 +92,8 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		[Fact]
 		public async Task Plants_GetOneFromID_ReturnsEmpty()
 		{
-			//Arrange
-			var controller = new PlantsController(_mockRepo.Object);
-
 			//Act
-			var result = await controller.Get(Guid.NewGuid());
+			var result = await _controller.Get(Guid.NewGuid());
 			var contentResult = result.Result as NotFoundObjectResult;
 
 			//Assert
@@ -91,13 +103,27 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
-		public async Task Plants_Insert_ReturnsOk()
+		public async Task Plants_GetOneFromID_ReturnsInternalError()
 		{
 			//Arrange
-			var controller = new PlantsController(_mockRepo.Object);
+			var exceptionMessage = "Message";
+			_mockRepo.Setup(repo => repo.GetPlant(It.IsAny<Guid>())).Throws(Mock.Of<Exception>(ex => ex.Message == exceptionMessage));
 
 			//Act
-			var result = await controller.Post(Mock.Of<PlantDTO>());
+			var result = await _controller.Get(It.IsAny<Guid>());
+			var contentResult = result.Result as ObjectResult;
+
+			//Assert
+			Assert.IsType<ActionResult<PlantDTO>>(result);
+			Assert.Equal(500, contentResult.StatusCode);
+			Assert.Equal(exceptionMessage, contentResult.Value);
+		}
+
+		[Fact]
+		public async Task Plants_Insert_ReturnsOk()
+		{
+			//Act
+			var result = await _controller.Post(Mock.Of<PlantDTO>());
 			var contentResult = result.Result as OkObjectResult;
 			var inserted = (bool)contentResult.Value;
 
@@ -109,37 +135,48 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		[Fact]
 		public async Task Plants_Insert_ReturnsConflict()
 		{
-			var commonName = "Plant";
-			var plant = Mock.Of<PlantDTO>();
 
 			//Arrange
+			var commonName = "Plant";
+			var plant = Mock.Of<PlantDTO>();
 			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).ReturnsAsync(plant);
-			var controller = new PlantsController(_mockRepo.Object);
 
 			//Act
-			var result = await controller.Post(Mock.Of<PlantDTO>(p => p.CommonName == commonName));
+			var result = await _controller.Post(Mock.Of<PlantDTO>(p => p.CommonName == commonName));
 			var contentResult = result.Result as ConflictObjectResult;
 
 			//Assert
-			Assert.IsType<ActionResult<bool>>(result);			
+			Assert.IsType<ActionResult<bool>>(result);
+		}
+
+		[Fact]
+		public async Task Plants_Insert_ReturnsInternalError()
+		{
+			//Arrange
+			var exceptionMessage = "Message";
+			_mockRepo.Setup(repo => repo.GetPlantByCommonName(It.IsAny<string>())).Throws(Mock.Of<Exception>(ex => ex.Message == exceptionMessage));
+
+			//Act
+			var result = await _controller.Post(Mock.Of<PlantDTO>());
+			var contentResult = result.Result as ObjectResult;
+
+			//Assert
+			Assert.IsType<ActionResult<bool>>(result);
+			Assert.Equal(500, contentResult.StatusCode);
+			Assert.Equal(exceptionMessage, contentResult.Value);
 		}
 
 		[Fact]
 		public async Task Plants_Insert_ReturnsBadModel()
 		{
-			var commonName = "Plant";
-			var plant = Mock.Of<PlantDTO>(p => p.CommonName == string.Empty);
-
 			//Arrange
-			_mockRepo.Setup(repo => repo.GetPlantByCommonName(commonName)).ReturnsAsync(plant);
-			var controller = new PlantsController(_mockRepo.Object);
+			_controller.ModelState.AddModelError("Error", "Error");
 
 			//Act
-			var result = await controller.Post(Mock.Of<PlantDTO>(p => p.CommonName == commonName));
-			var contentResult = result.Result as ConflictObjectResult;
+			var result = await _controller.Post(Mock.Of<PlantDTO>());
 
 			//Assert
-			Assert.IsType<ActionResult<bool>>(result);
+			Assert.NotNull(result);
 		}
 	}
 }

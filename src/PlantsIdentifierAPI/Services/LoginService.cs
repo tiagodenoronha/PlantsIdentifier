@@ -111,7 +111,8 @@ namespace PlantsIdentifierAPI.Services
 				Authenticated = true,
 				CreatedDate = createDate.ToString(Constants.DATEFORMAT),
 				ExpirationDate = expiryDate.ToString(Constants.DATEFORMAT),
-				AccessToken = token
+				AccessToken = token,
+				RefreshToken = GenerateRefreshToken()
 			};
 		}
 

@@ -78,20 +78,6 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
-		public async Task Login_Refresh_ReturnsUnauthorized()
-		{
-			//Arrange
-			var mockRefreshToken = "mockrefreshtoken";
-			var otherMockRefreshToken = "otherrefreshtoken";
-			var mockUser = Mock.Of<ApplicationUser>(user => user.RefreshToken == otherMockRefreshToken);
-			_loginService.Setup(service => service.GetUserFromToken(It.IsAny<string>())).Returns(Task.FromResult(mockUser));
-
-			//Assert
-			var exception = await Assert.ThrowsAsync<SecurityTokenException>(() => _controller.Refresh(It.IsAny<string>(), mockRefreshToken));
-			Assert.Equal(exception.Message, PlantsIdentifierAPI.Helpers.Constants.INVALIDREFRESHTOKEN);
-		}
-
-		[Fact]
 		public async Task Login_Refresh_ReturnsOk()
 		{
 			//Arrange
@@ -106,6 +92,74 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			Assert.NotNull(result);
 			Assert.IsAssignableFrom<ActionResult>(result);
 			Assert.NotNull(result.Value);
+		}
+
+		[Fact]
+		public async Task Login_Refresh_ReturnsUnauthorized()
+		{
+			//Arrange
+			var mockRefreshToken = "mockrefreshtoken";
+			var otherMockRefreshToken = "otherrefreshtoken";
+			var mockUser = Mock.Of<ApplicationUser>(user => user.RefreshToken == otherMockRefreshToken);
+			_loginService.Setup(service => service.GetUserFromToken(It.IsAny<string>())).Returns(Task.FromResult(mockUser));
+
+			//Assert
+			var exception = await Assert.ThrowsAsync<SecurityTokenException>(() => _controller.Refresh(It.IsAny<string>(), mockRefreshToken));
+			Assert.Equal(exception.Message, PlantsIdentifierAPI.Helpers.Constants.INVALIDREFRESHTOKEN);
+		}
+
+		[Fact]
+		public async Task Login_Register_ReturnsOk()
+		{
+			//Arrange
+			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(false);
+			_loginService.Setup(service => service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+				.ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
+
+			//Act
+			var result = await _controller.Register(Mock.Of<RegisterDTO>());
+			var contentResult = result.Result as ObjectResult;
+
+			//Assert
+			Assert.NotNull(result);
+			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.NotNull(result.Value);
+			Assert.True(result.Value.Succeeded);
+		}
+
+		[Fact]
+		public async Task Login_Register_ReturnsUnauthorized()
+		{
+			//Arrange
+			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(true);
+
+			//Act
+			var result = await _controller.Register(Mock.Of<RegisterDTO>());
+			var contentResult = result.Result as ObjectResult;
+
+			//Assert
+			Assert.NotNull(result);
+			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.NotNull(contentResult);
+			Assert.Equal(401, contentResult.StatusCode);
+			Assert.Equal(PlantsIdentifierAPI.Helpers.Constants.USERALREADYEXISTS, contentResult.Value);
+		}
+
+		[Fact]
+		public async Task Login_Register_ReturnsBadModel()
+		{
+			//Arrange
+			_controller.ModelState.AddModelError("Error", "Error");
+
+			//Act
+			var result = await _controller.Register(Mock.Of<RegisterDTO>());
+			var contentResult = result.Result as BadRequestObjectResult;
+
+			//Assert
+			Assert.NotNull(result);
+			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.NotNull(contentResult);
+			Assert.Equal(400, contentResult.StatusCode);
 		}
 
 		[Fact]
@@ -129,43 +183,6 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 		}
 
 		[Fact]
-		public async Task Login_Register_ReturnsUnauthorized()
-		{
-			//Arrange
-			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(true);
-
-			//Act
-			var result = await _controller.Register(Mock.Of<RegisterDTO>());
-			var contentResult = result.Result as ObjectResult;
-
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
-			Assert.NotNull(contentResult);
-			Assert.Equal(401, contentResult.StatusCode);
-			Assert.Equal(PlantsIdentifierAPI.Helpers.Constants.USERALREADYEXISTS, contentResult.Value);
-		}
-
-		[Fact]
-		public async Task Login_Register_ReturnsOk()
-		{
-			//Arrange
-			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(false);
-			_loginService.Setup(service => service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-				.ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
-
-			//Act
-			var result = await _controller.Register(Mock.Of<RegisterDTO>());
-			var contentResult = result.Result as ObjectResult;
-
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
-			Assert.NotNull(result.Value);
-			Assert.True(result.Value.Succeeded);
-		}
-
-		[Fact]
 		public async Task Login_Register_ReturnsNotOkDueToService()
 		{
 			//Arrange
@@ -182,23 +199,6 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			Assert.IsType<ActionResult<IdentityResult>>(result);
 			Assert.NotNull(result.Value);
 			Assert.False(result.Value.Succeeded);
-		}
-
-		[Fact]
-		public async Task Login_Register_ReturnsBadModel()
-		{
-			//Arrange
-			_controller.ModelState.AddModelError("Error", "Error");
-
-			//Act
-			var result = await _controller.Register(Mock.Of<RegisterDTO>());
-			var contentResult = result.Result as BadRequestObjectResult;
-
-			//Assert
-			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
-			Assert.NotNull(contentResult);
-			Assert.Equal(400, contentResult.StatusCode);
 		}
 	}
 }

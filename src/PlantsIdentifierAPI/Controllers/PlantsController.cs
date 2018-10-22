@@ -23,6 +23,7 @@ namespace PlantsIdentifierAPI.Controllers
 		// GET api/plants
 		[HttpGet]
 		[ProducesResponseType(200)]
+		[ProducesResponseType(500)]
 		public ActionResult<IEnumerable<PlantDTO>> Get()
 		{
 			try
@@ -44,6 +45,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		//Returns this because the Plant may not exist
 		[ProducesResponseType(404)]
+		[ProducesResponseType(500)]
 		public async Task<ActionResult<PlantDTO>> Get(Guid ID)
 		{
 			try
@@ -78,9 +80,9 @@ namespace PlantsIdentifierAPI.Controllers
 				_plantsServices.SavePlant(plant);
 				return Ok(true);
 			}
-			catch (DbUpdateException dbEx)
+			catch (Exception ex)
 			{
-				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, dbEx.Message);
+				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, ex.Message);
 			}
 		}
 	}

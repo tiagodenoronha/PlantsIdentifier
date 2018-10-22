@@ -66,6 +66,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			Assert.NotNull(result);
 			Assert.IsType<TokenModel>(result);
 			Assert.Equal(result.ExpirationDate, DateTime.Parse(result.CreatedDate).AddSeconds(_tokenConfigurationsMock.Seconds).ToString(Constants.DATEFORMAT));
+			Assert.NotNull(result.RefreshToken);
 		}
 
 		[Fact]
