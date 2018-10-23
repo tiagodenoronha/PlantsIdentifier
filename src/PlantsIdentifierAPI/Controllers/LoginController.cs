@@ -60,22 +60,30 @@ namespace PlantsIdentifierAPI.Controllers
 
 		[HttpPost]
 		[ProducesResponseType(200)]
+		[ProducesResponseType(400)]
 		public async Task<IActionResult> Refresh(string token, string refreshToken)
 		{
-			var user = await _loginService.GetUserFromToken(token);
-			if (user.RefreshToken != refreshToken)
-				throw new SecurityTokenException(Constants.INVALIDREFRESHTOKEN);
-
-			var newJwtToken = _loginService.GenerateToken(user);
-			var newRefreshToken = _loginService.GenerateRefreshToken();
-
-			//TODO We need to make this method more generic so that we only need to check this one method for a point of failure.
-			_loginService.ReplaceRefreshToken(user, newRefreshToken);
-			return new ObjectResult(new
+			try
 			{
-				token = newJwtToken,
-				refreshToken = newRefreshToken
-			});
+				var user = await _loginService.GetUserFromToken(token);
+				if (user.RefreshToken != refreshToken)
+					throw new SecurityTokenException(Constants.INVALIDREFRESHTOKEN);
+
+				var newJwtToken = _loginService.GenerateToken(user);
+				var newRefreshToken = _loginService.GenerateRefreshToken();
+
+				//TODO We need to make this method more generic so that we only need to check this one method for a point of failure.
+				_loginService.ReplaceRefreshToken(user, newRefreshToken);
+				return new ObjectResult(new
+				{
+					token = newJwtToken,
+					refreshToken = newRefreshToken
+				});
+			}
+			catch (SecurityTokenException st)
+			{
+				return BadRequest(st.Message);
+			}
 		}
 	}
 }
