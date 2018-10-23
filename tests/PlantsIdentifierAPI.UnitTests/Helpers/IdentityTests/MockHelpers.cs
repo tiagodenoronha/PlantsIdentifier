@@ -90,6 +90,5 @@ namespace Microsoft.AspNetCore.Identity.Test
 				new IdentityErrorDescriber(),
 				null);
 		}
-
 	}
 }
