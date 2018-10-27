@@ -126,26 +126,37 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		public async Task Login_CreateUser_ReturnsOk()
 		{
 			//Arrange
+			var mockUser = "user";
+			var mockEmail = "email";
+			var mockPassword = "password";
 			_userManagerMock.Setup(manager => manager.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
+			_tokenConfigurationsMock.Seconds = 1000;
 
 			//Act
-			var result = await _service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+			var result = await _service.CreateUser(mockUser, mockEmail, mockPassword);
 
 			//Assert
-			Assert.True(result.Succeeded);
+			Assert.NotNull(result);
+			Assert.NotNull(result.AccessToken);
+			Assert.NotNull(result.RefreshToken);
+			Assert.True(result.Authenticated);
 		}
 
 		[Fact]
 		public async Task Login_CreateUser_ReturnsFalse()
 		{
 			//Arrange
+			var mockUser = "user";
+			var mockEmail = "email";
+			var mockPassword = "password";
 			_userManagerMock.Setup(manager => manager.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == false));
+			_tokenConfigurationsMock.Seconds = 1000;
 
 			//Act
-			var result = await _service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+			var result = await _service.CreateUser(mockUser, mockEmail, mockPassword);
 
 			//Assert
-			Assert.False(result.Succeeded);
+			Assert.Null(result);
 		}
 
 		//[Fact]

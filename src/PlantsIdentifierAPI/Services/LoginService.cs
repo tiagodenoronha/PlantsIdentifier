@@ -132,10 +132,15 @@ namespace PlantsIdentifierAPI.Services
 			return userIdentity != null;
 		}
 
-		public async Task<IdentityResult> CreateUser(string username, string email, string password)
+		public async Task<TokenModel> CreateUser(string username, string email, string password)
 		{
 			var user = new ApplicationUser { UserName = username, Email = email };
-			return await _userManager.CreateAsync(user, password);
+			var token = GenerateToken(user);
+			user.RefreshToken = token.RefreshToken;
+			var result = await _userManager.CreateAsync(user, password);
+			if (result.Succeeded)
+				return token;
+			return null;
 		}
 	}
 }

@@ -114,7 +114,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(false);
 			_loginService.Setup(service => service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-				.ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == true));
+				.ReturnsAsync(Mock.Of<TokenModel>());
 
 			//Act
 			var result = await _controller.Register(Mock.Of<RegisterDTO>());
@@ -122,9 +122,8 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 
 			//Assert
 			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.IsType<ActionResult<TokenModel>>(result);
 			Assert.NotNull(result.Value);
-			Assert.True(result.Value.Succeeded);
 		}
 
 		[Fact]
@@ -139,7 +138,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 
 			//Assert
 			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.IsType<ActionResult<TokenModel>>(result);
 			Assert.NotNull(contentResult);
 			Assert.Equal(401, contentResult.StatusCode);
 			Assert.Equal(PlantsIdentifierAPI.Helpers.Constants.USERALREADYEXISTS, contentResult.Value);
@@ -157,7 +156,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 
 			//Assert
 			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.IsType<ActionResult<TokenModel>>(result);
 			Assert.NotNull(contentResult);
 			Assert.Equal(400, contentResult.StatusCode);
 		}
@@ -176,7 +175,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 
 			//Assert
 			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.IsType<ActionResult<TokenModel>>(result);
 			Assert.NotNull(contentResult);
 			Assert.Equal(400, contentResult.StatusCode);
 			Assert.Equal(PlantsIdentifierAPI.Helpers.Constants.PASSWORDMISMATCH, contentResult.Value);
@@ -188,7 +187,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//Arrange
 			_loginService.Setup(service => service.UserExists(It.IsAny<string>())).ReturnsAsync(false);
 			_loginService.Setup(service => service.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-				.ReturnsAsync(Mock.Of<IdentityResult>(ir => ir.Succeeded == false));
+				.ReturnsAsync(Mock.Of<TokenModel>());
 
 			//Act
 			var result = await _controller.Register(Mock.Of<RegisterDTO>());
@@ -196,9 +195,8 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 
 			//Assert
 			Assert.NotNull(result);
-			Assert.IsType<ActionResult<IdentityResult>>(result);
+			Assert.IsType<ActionResult<TokenModel>>(result);
 			Assert.NotNull(result.Value);
-			Assert.False(result.Value.Succeeded);
 		}
 	}
 }

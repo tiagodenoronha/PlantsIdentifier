@@ -6,6 +6,7 @@ using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.DTOS;
 using Microsoft.AspNetCore.Identity;
+using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -25,7 +26,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(401)]
-		public async Task<ActionResult<IdentityResult>> Register([FromBody] RegisterDTO user)
+		public async Task<ActionResult<TokenModel>> Register([FromBody] RegisterDTO user)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
