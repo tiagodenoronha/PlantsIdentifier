@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.DTOS;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -24,6 +26,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[HttpGet]
 		[ProducesResponseType(200)]
 		[ProducesResponseType(500)]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<IEnumerable<PlantDTO>> Get()
 		{
 			try
@@ -66,6 +69,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(409)]
 		[ProducesResponseType(500)]
+		[Authorize(Roles = "Administrator")]
 		public async Task<ActionResult<bool>> Post([FromBody] PlantDTO plant)
 		{
 			if (!ModelState.IsValid)

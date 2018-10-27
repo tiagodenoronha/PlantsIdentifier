@@ -97,6 +97,7 @@ namespace PlantsIdentifierAPI
 			services.AddAutoMapper();
 
 			services.AddScoped<ILoginService, LoginService>();
+			services.AddScoped<IPlantsServices, PlantsServices>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
