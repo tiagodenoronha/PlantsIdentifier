@@ -103,9 +103,12 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			var mockUser = Mock.Of<ApplicationUser>(user => user.RefreshToken == otherMockRefreshToken);
 			_loginService.Setup(service => service.GetUserFromToken(It.IsAny<string>())).Returns(Task.FromResult(mockUser));
 
+			//Act
+			var result = await _controller.Refresh(It.IsAny<string>(), mockRefreshToken) as BadRequestObjectResult;
+
 			//Assert
-			var exception = await Assert.ThrowsAsync<SecurityTokenException>(() => _controller.Refresh(It.IsAny<string>(), mockRefreshToken));
-			Assert.Equal(exception.Message, PlantsIdentifierAPI.Helpers.Constants.INVALIDREFRESHTOKEN);
+			Assert.NotNull(result);
+			Assert.Equal(result.Value, PlantsIdentifierAPI.Helpers.Constants.INVALIDREFRESHTOKEN);
 		}
 
 		[Fact]
