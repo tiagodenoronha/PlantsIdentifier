@@ -118,6 +118,12 @@
     <AndroidResource Include="Resources\values-v19\styles.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PlantsIdentifier\PlantsIdentifier.csproj">
+      <Project>{91C1EAFD-F973-4E56-9127-2DC2D0F20D9D}</Project>
+      <Name>PlantsIdentifier</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MobileBuildToolsTargets)" Condition="Exists('$(MobileBuildToolsTargets)')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

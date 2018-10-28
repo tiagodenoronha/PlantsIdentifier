@@ -185,6 +185,12 @@
     <PackageReference Include="Mobile.BuildTools" Version="1.4.0.638" PrivateAssets="all" />
     <PackageReference Include="Prism.QuickStart.MFractor.Config" Version="1.0.3" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PlantsIdentifier\PlantsIdentifier.csproj">
+      <Project>{91C1EAFD-F973-4E56-9127-2DC2D0F20D9D}</Project>
+      <Name>PlantsIdentifier</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MobileBuildToolsTargets)" Condition="Exists('$(MobileBuildToolsTargets)')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
