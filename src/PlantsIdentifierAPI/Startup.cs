@@ -1,60 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using PlantsIdentifierAPI.Data;
+using PlantsIdentifierAPI.Helpers;
+using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
+using PlantsIdentifierAPI.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            ///////////////////////// using a local .db file /////////////////////////
-            //services.AddDbContext<PlantsContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			///////////////////////// using a local .db file /////////////////////////
+			//services.AddDbContext<ApplicationDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("PlantContext")));
 
-            /////////////////////////using a docker container with an SQL Server /////////////////////////
-            services.AddDbContext<PlantsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
-            
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            // provide the auto-mapper
-            services.AddAutoMapper();
-        }
+			/////////////////////////using a docker container with an SQL Server /////////////////////////
+			services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PlantsSQLServer")));
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
-            }
-            else
-            {
-                app.UseHsts();
-                //loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Information);
-            }
+			services.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddEntityFrameworkStores<ApplicationDBContext>()
+				.AddDefaultTokenProviders();
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
-        }
-    }
+			var signingConfigurations = new SigningConfigurations(Configuration);
+			services.AddSingleton(signingConfigurations);
+
+			var tokenConfigurations = new TokenConfigurations();
+			new ConfigureFromConfigurationOptions<TokenConfigurations>(
+				Configuration.GetSection("TokenConfigurations"))
+					.Configure(tokenConfigurations);
+			services.AddSingleton(tokenConfigurations);
+
+			services.AddAuthentication(authOptions =>
+			{
+				authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			}).AddJwtBearer(bearerOptions =>
+			{
+				var paramsValidation = bearerOptions.TokenValidationParameters;
+				paramsValidation.IssuerSigningKey = signingConfigurations.Key;
+				paramsValidation.ValidAudience = tokenConfigurations.Audience;
+				paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
+
+				//Checks for a valid signature of a token
+				paramsValidation.ValidateIssuerSigningKey = true;
+
+				//Checks if the token has expired
+				paramsValidation.ValidateLifetime = true;
+
+				paramsValidation.ClockSkew = TimeSpan.Zero;
+
+				//Handling refresh tokens
+				bearerOptions.Events = new JwtBearerEvents
+				{
+					OnAuthenticationFailed = context =>
+					{
+						if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+						{
+							context.Response.Headers.Add("Token-Expired", "true");
+						}
+						return Task.CompletedTask;
+					}
+				};
+			});
+
+			//Activates the authorizing middleware
+			services.AddAuthorization(auth =>
+			{
+				auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+					.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+					.RequireAuthenticatedUser().Build());
+			});
+
+			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddAutoMapper();
+
+			services.AddScoped<ILoginService, LoginService>();
+			services.AddScoped<IPlantsServices, PlantsServices>();
+		}
+
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDBContext context,
+		ILoggerFactory loggerFactory, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+				//loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Trace);
+			}
+			else
+			{
+				app.UseHsts();
+				//loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Information);
+			}
+
+			//Ensure the DB is filled
+			new IdentityInitializer(context, userManager, roleManager, Configuration).Initialize();
+
+			app.UseHttpsRedirection();
+			app.UseMvcWithDefaultRoute();
+		}
+	}
 }

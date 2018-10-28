@@ -2,8 +2,7 @@
 *~
 
 *.db
-**/appsettings.staging.json
-**/appsettings.json
+**/appsettings.Development.json
 
 
 # build

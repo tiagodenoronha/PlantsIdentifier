@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
@@ -10,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Services
 {
-    public class PlantsServices : IPlantsServices
+	public class PlantsServices : IPlantsServices
     {
-        readonly PlantsContext _plantsContext;
+        readonly ApplicationDBContext _plantsContext;
         readonly IMapper _mapper;
 
-        public PlantsServices(PlantsContext plantsContext, IMapper mapper)
+        public PlantsServices(ApplicationDBContext applicationDBContext, IMapper mapper)
         {
-            _plantsContext = plantsContext;
+            _plantsContext = applicationDBContext;
             _mapper = mapper;
         }
 

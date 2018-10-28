@@ -4,7 +4,7 @@ using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Helpers
 {
-    public class AutoMapperProfile : Profile
+	public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {

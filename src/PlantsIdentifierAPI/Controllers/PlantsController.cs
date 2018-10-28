@@ -1,13 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PlantsIdentifierAPI.DTOS;
+using PlantsIdentifierAPI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PlantsIdentifierAPI.Interfaces;
-using PlantsIdentifierAPI.DTOS;
-using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -25,6 +24,8 @@ namespace PlantsIdentifierAPI.Controllers
 		// GET api/plants
 		[HttpGet]
 		[ProducesResponseType(200)]
+		[ProducesResponseType(500)]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		public ActionResult<IEnumerable<PlantDTO>> Get()
 		{
 			try
@@ -46,6 +47,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		//Returns this because the Plant may not exist
 		[ProducesResponseType(404)]
+		[ProducesResponseType(500)]
 		public async Task<ActionResult<PlantDTO>> Get(Guid ID)
 		{
 			try
@@ -66,6 +68,7 @@ namespace PlantsIdentifierAPI.Controllers
 		[ProducesResponseType(200)]
 		[ProducesResponseType(409)]
 		[ProducesResponseType(500)]
+		[Authorize(Roles = "Administrator")]
 		public async Task<ActionResult<bool>> Post([FromBody] PlantDTO plant)
 		{
 			if (!ModelState.IsValid)
@@ -80,9 +83,9 @@ namespace PlantsIdentifierAPI.Controllers
 				_plantsServices.SavePlant(plant);
 				return Ok(true);
 			}
-			catch (DbUpdateException dbEx)
+			catch (Exception ex)
 			{
-				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, dbEx.Message);
+				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError, ex.Message);
 			}
 		}
 	}
