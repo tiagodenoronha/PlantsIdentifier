@@ -26,7 +26,6 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 		readonly Mock<SigningConfigurations> _signingConfigurationsMock;
 		readonly TokenConfigurations _tokenConfigurationsMock;
 		readonly LoginService _service;
-		//readonly Mock<IUserStore<ApplicationUser>> _userStoreMock;
 
 		public LoginServicesTests()
 		{
@@ -34,17 +33,6 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			_signinManagerMock = new SignInManager<ApplicationUser>(_userManagerMock.Object, new Mock<IHttpContextAccessor>().Object,
 				new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object, new Mock<IOptions<IdentityOptions>>().Object,
 				MockHelpers.MockILogger<SignInManager<ApplicationUser>>(new StringBuilder()).Object, new Mock<IAuthenticationSchemeProvider>().Object);
-			//var context = new Mock<HttpContext>();
-			//var contextAccessor = new Mock<IHttpContextAccessor>();
-			//contextAccessor.Setup(a => a.HttpContext).Returns(context.Object);
-			//var roleManager = MockHelpers.MockRoleManager<PocoRole>();
-			//var identityOptions = new IdentityOptions();
-			//var options = new Mock<IOptions<IdentityOptions>>();
-			//options.Setup(a => a.Value).Returns(identityOptions);
-			//var claimsFactory = new UserClaimsPrincipalFactory<ApplicationUser, PocoRole>(_userManagerMock.Object, roleManager.Object, options.Object);
-			//var logStore = new StringBuilder();
-			//var logger = MockHelpers.MockILogger<SignInManager<ApplicationUser>>(logStore);
-			//_signinManagerMock = new SignInManager<ApplicationUser>(_userManagerMock.Object, contextAccessor.Object, claimsFactory, options.Object, logger.Object, new Mock<IAuthenticationSchemeProvider>().Object);
 			_signingConfigurationsMock = new Mock<SigningConfigurations>();
 			_tokenConfigurationsMock = Mock.Of<TokenConfigurations>();
 			_service = new LoginService(_userManagerMock.Object, _signinManagerMock,
@@ -158,27 +146,5 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			//Assert
 			Assert.Null(result);
 		}
-
-		//[Fact]
-		//public async Task Login_ValidateUser_ReturnsOk()
-		//{
-		//	//Arrange
-		//	var mockEmail = "email";
-		//	var mockUser = Mock.Of<ApplicationUser>(u => u.Email == mockEmail);
-		//	var mockLogin = new LoginDTO { UserEmail = mockEmail, Password = "Password" };
-		//	await _userManagerMock.Object.CreateAsync(mockUser, "Password");
-		//	_userManagerMock.Setup(manager => manager.FindByEmailAsync(mockEmail)).Returns(Task.FromResult(mockUser));
-
-
-
-		//	var _service = new LoginService(_userManagerMock.Object, _signinManagerMock,
-		//		_signingConfigurationsMock.Object, _tokenConfigurationsMock.Object);
-
-		//	//Act
-		//	var result = await service.ValidateUser(mockLogin);
-
-		//	//Assert
-		//	Assert.NotNull(result);
-		//}
 	}
 }
