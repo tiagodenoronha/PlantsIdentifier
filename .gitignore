@@ -1,7 +1,9 @@
 # Autosave files
 *~
+
 *.db
 **/appsettings.Development.json
+
 
 # build
 [Oo]bj/
@@ -29,6 +31,7 @@ autom4te.cache/
 tarballs/
 test-results/
 Thumbs.db
+.vs/
 
 # Mac bundle stuff
 *.dmg
@@ -38,27 +41,5 @@ Thumbs.db
 *_Resharper.*
 *.Resharper
 
-# MFractor
-.mfractor/
-
-# Azure
-PublishProfiles/
-
 # dotCover
 *.dotCover
-
-Certificate/
-.vs/
-.vscode/
-.droidres/
-
-secrets.json
-Secrets.cs
-
-# Auto generated files
-project.lock.json
-PlantsIdentifier.*.nuget.*
-
-# Manifests
-Info.plist
-AndroidManifest.xml
