@@ -2,10 +2,11 @@
 
 [![Build Status](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_apis/build/status/PlantsIdentifier-CI)](https://tiagodenoronha.visualstudio.com/PlantsIdentifier/_build/latest?definitionId=4)
 [![CodeFactor](https://www.codefactor.io/repository/github/tiagodenoronha/plantsidentifier/badge)](https://www.codefactor.io/repository/github/tiagodenoronha/plantsidentifier)
+[![codecov](https://codecov.io/gh/tiagodenoronha/PlantsIdentifier/branch/master/graph/badge.svg)](https://codecov.io/gh/tiagodenoronha/PlantsIdentifier)
 
 I recently adopted a cat and found out there are some plants that are dangerous for him! So i've set out to build a mobile App which leverages Azure Custom Vision. 
 
-It is a Xamarin.Forms App, with a .NET Core support Backend (yes, I use a Mac with VSCode :) ). 
+It is a Xamarin.Forms App, with a .NET Core support Backend. 
 All connections from the App pass through the backend to be able to monitor it a bit better.
 
 [![Bugs](https://img.shields.io/github/issues/tiagodenoronha/PlantsIdentifier.svg)](https://github.com/tiagodenoronha/PlantsIdentifier/issues?utf8=✓&q=is%3Aissue+is%3Aopen+label%3Abug)
@@ -43,6 +44,7 @@ First of all, thank you to everyone who contributes!
 [![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/0)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/0)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/1)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/1)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/2)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/2)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/3)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/3)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/4)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/4)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/5)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/5)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/6)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/6)[![](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/images/7)](https://sourcerer.io/fame/tiagodenoronha/tiagodenoronha/PlantsIdentifier/links/7)
 
 If you are interested in fixing issues and contributing directly to the code base, be my guest! Just fork the repo and do your magic! :)
+See the list of [contributors](https://github.com/tiagodenoronha/PlantsIdentifier/contributors) who participated in this project.
 
 Please see also the [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -54,12 +56,6 @@ Please see also the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### References
 This ReadMe was based on the [VSCode](https://github.com/Microsoft/vscode/)'s ReadMe.
-
-## Authors
-
-* **Tiago Noronha** - *Initial work* - [tiagodenoronha](https://github.com/tiagodenoronha)
-
-See also the list of [contributors](https://github.com/tiagodenoronha/PlantsIdentifier/contributors) who participated in this project.
 
 ## License
 
