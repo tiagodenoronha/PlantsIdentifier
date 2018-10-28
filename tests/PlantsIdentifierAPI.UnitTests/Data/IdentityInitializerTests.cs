@@ -5,10 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using PlantsIdentifierAPI.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
 
 namespace PlantsIdentifierAPI.UnitTests.Data
 {
@@ -29,16 +25,6 @@ namespace PlantsIdentifierAPI.UnitTests.Data
 			_configurationRoot = new Mock<IConfigurationRoot>();
 			_identityInitializer = new IdentityInitializer(_dbContextMock.Object, _userManagerMock.Object,
 			_roleManagerMock.Object, _configurationRoot.Object);
-		}
-
-		[Fact]
-		public void Identity_Initialize_DatabaseExists()
-		{
-			//Arrange
-			_dbContextMock.Setup(db => db.Database.EnsureCreated()).Returns(true);
-
-			//Act
-			_identityInitializer.Initialize();
 		}
 	}
 }

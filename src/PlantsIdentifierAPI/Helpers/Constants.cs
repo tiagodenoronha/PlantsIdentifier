@@ -1,5 +1,3 @@
-using System;
-
 namespace PlantsIdentifierAPI.Helpers
 {
 	public static class Constants

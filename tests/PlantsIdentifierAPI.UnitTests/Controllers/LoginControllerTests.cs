@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PlantsIdentifierAPI.Controllers;
 using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
 using PlantsIdentifierAPI.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -35,7 +31,7 @@ namespace PlantsIdentifierAPI.UnitTests.Controllers
 			//This fails, for some reason...
 			//var mockToken = Mock.Of<TokenModel>();
 			_loginService.Setup(service => service.ValidateUser(It.IsAny<LoginDTO>())).Returns(Task.FromResult(Mock.Of<ApplicationUser>()));
-			_loginService.Setup(service => service.GenerateToken(It.IsAny<ApplicationUser>())).Returns(mockToken);
+			_loginService.Setup(service => service.GenerateAccessToken(It.IsAny<ApplicationUser>())).Returns(mockToken);
 
 			//Act
 			var result = await _controller.Login(Mock.Of<LoginDTO>()) as OkObjectResult;

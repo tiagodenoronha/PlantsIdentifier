@@ -81,7 +81,7 @@ namespace PlantsIdentifierAPI.Services
 			return principal;
 		}
 
-		public TokenModel GenerateToken(ApplicationUser userIdentity)
+		public TokenModel GenerateAccessToken(ApplicationUser userIdentity)
 		{
 			var identity = new ClaimsIdentity(
 					new GenericIdentity(userIdentity.UserName, "Login"),
@@ -135,12 +135,10 @@ namespace PlantsIdentifierAPI.Services
 		public async Task<TokenModel> CreateUser(string username, string email, string password)
 		{
 			var user = new ApplicationUser { UserName = username, Email = email };
-			var token = GenerateToken(user);
+			var token = GenerateAccessToken(user);
 			user.RefreshToken = token.RefreshToken;
 			var result = await _userManager.CreateAsync(user, password);
-			if (result.Succeeded)
-				return token;
-			return null;
+			return result.Succeeded ? token : null;
 		}
 	}
 }

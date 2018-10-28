@@ -3,19 +3,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Test;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Moq;
 using PlantsIdentifierAPI.Data;
-using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Models;
 using PlantsIdentifierAPI.Services;
-using PlantsIdentifierAPI.UnitTests.Helpers;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using System.Linq;
 
 namespace PlantsIdentifierAPI.UnitTests.Services
 {
@@ -48,7 +45,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			_tokenConfigurationsMock.Seconds = 1000;
 
 			//Act
-			var result = _service.GenerateToken(mockUser);
+			var result = _service.GenerateAccessToken(mockUser);
 
 			//Assert
 			Assert.NotNull(result);
@@ -64,7 +61,7 @@ namespace PlantsIdentifierAPI.UnitTests.Services
 			var mockUser = Mock.Of<ApplicationUser>();
 
 			//Assert
-			var exception = Assert.Throws<ArgumentNullException>(() => _service.GenerateToken(mockUser));
+			var exception = Assert.Throws<ArgumentNullException>(() => _service.GenerateAccessToken(mockUser));
 		}
 
 		[Fact]

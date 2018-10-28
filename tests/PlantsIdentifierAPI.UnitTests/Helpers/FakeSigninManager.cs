@@ -5,9 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using PlantsIdentifierAPI.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PlantsIdentifierAPI.UnitTests.Helpers
 {

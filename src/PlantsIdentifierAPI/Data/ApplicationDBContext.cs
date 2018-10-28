@@ -1,12 +1,11 @@
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PlantsIdentifierAPI.Controllers;
 using PlantsIdentifierAPI.Models;
 
 namespace PlantsIdentifierAPI.Data
 {
-    public class ApplicationDBContext : IdentityDbContext<ApplicationUser>
+	public class ApplicationDBContext : IdentityDbContext<ApplicationUser>
     {
         protected override void OnModelCreating(ModelBuilder builder)
         {

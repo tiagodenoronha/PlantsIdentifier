@@ -3,7 +3,6 @@ using Moq;
 using PlantsIdentifierAPI.Controllers;
 using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Interfaces;
-using PlantsIdentifierAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

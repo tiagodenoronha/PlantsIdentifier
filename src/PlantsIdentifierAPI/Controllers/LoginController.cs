@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Helpers;
 using PlantsIdentifierAPI.Interfaces;
-using PlantsIdentifierAPI.DTOS;
-using Microsoft.AspNetCore.Identity;
 using PlantsIdentifierAPI.Models;
+using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Controllers
 {
@@ -54,7 +53,7 @@ namespace PlantsIdentifierAPI.Controllers
 				return StatusCode(Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized, Constants.WRONGEMAILORPASSWORD);
 			else
 			{
-				var token = _loginService.GenerateToken(userIdentity);
+				var token = _loginService.GenerateAccessToken(userIdentity);
 				return Ok(token);
 			}
 		}
@@ -70,7 +69,7 @@ namespace PlantsIdentifierAPI.Controllers
 				if (user.RefreshToken != refreshToken)
 					throw new SecurityTokenException(Constants.INVALIDREFRESHTOKEN);
 
-				var newJwtToken = _loginService.GenerateToken(user);
+				var newJwtToken = _loginService.GenerateAccessToken(user);
 				var newRefreshToken = _loginService.GenerateRefreshToken();
 
 				//TODO We need to make this method more generic so that we only need to check this one method for a point of failure.

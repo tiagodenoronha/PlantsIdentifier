@@ -1,6 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace PlantsIdentifierAPI.Data
 {

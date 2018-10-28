@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlantsIdentifierAPI.Models
 {
-    public class Plant
+	public class Plant
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 

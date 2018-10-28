@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,9 +13,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.Helpers;
-using PlantsIdentifierAPI.Models;
 using PlantsIdentifierAPI.Interfaces;
+using PlantsIdentifierAPI.Models;
 using PlantsIdentifierAPI.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI
 {

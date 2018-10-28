@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Services
 {
-    public class PlantsServices : IPlantsServices
+	public class PlantsServices : IPlantsServices
     {
         readonly ApplicationDBContext _plantsContext;
         readonly IMapper _mapper;

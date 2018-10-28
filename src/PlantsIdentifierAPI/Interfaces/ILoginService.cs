@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using PlantsIdentifierAPI.Data;
+﻿using PlantsIdentifierAPI.Data;
 using PlantsIdentifierAPI.DTOS;
 using PlantsIdentifierAPI.Models;
+using System.Threading.Tasks;
 
 namespace PlantsIdentifierAPI.Interfaces
 {
@@ -11,7 +10,7 @@ namespace PlantsIdentifierAPI.Interfaces
 		Task<ApplicationUser> ValidateUser(LoginDTO user);
 		void ReplaceRefreshToken(ApplicationUser user, string newRefreshToken);
 		Task<ApplicationUser> GetUserFromToken(string token);
-		TokenModel GenerateToken(ApplicationUser userIdentity);
+		TokenModel GenerateAccessToken(ApplicationUser userIdentity);
 		string GenerateRefreshToken();
 		Task<bool> UserExists(string email);
 		Task<TokenModel> CreateUser(string username, string email, string password);
